@@ -1,6 +1,15 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { IconSwords, IconPin } from './Icons'
+import { IconSwords, IconPin, IconUsers, IconEnvelope } from './Icons'
+
+function EmptyState({ icon, text }) {
+  return (
+    <div style={{ textAlign: 'center', padding: '56px 16px', color: 'var(--muted-soft)' }}>
+      <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'center', color: 'var(--border)' }}>{icon}</div>
+      <p style={{ margin: 0, fontSize: 14, color: 'var(--muted-soft)' }}>{text}</p>
+    </div>
+  )
+}
 import { useLang } from '../lib/i18n'
 import {
   searchPlayers,
@@ -206,9 +215,7 @@ export default function FriendsPage({ profile, onViewProfile }) {
                 }}
               />
               {filteredFriends.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--muted-soft)', fontSize: 14 }}>
-                  {t('nobody_found')}
-                </div>
+                <EmptyState icon={<IconUsers size={56} color="currentColor" />} text={t('nobody_found')} />
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {filteredFriends.map(f => (
@@ -233,9 +240,7 @@ export default function FriendsPage({ profile, onViewProfile }) {
           {tab === 'requests' && (
             <>
               {requests.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--muted-soft)', fontSize: 14 }}>
-                  {t('no_requests')}
-                </div>
+                <EmptyState icon={<IconEnvelope size={56} color="currentColor" />} text={t('no_requests')} />
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {requests.map(r => (

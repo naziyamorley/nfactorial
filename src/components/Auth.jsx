@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { IconEnvelope, IconChessRook } from './Icons'
+import { IconEnvelope, IconChessRook, IconRobot, IconSwords, IconCrown, IconGraduation } from './Icons'
 import { KZ_CITIES, useLang } from '../lib/i18n'
 
 const display = { fontFamily: "'Oswald', sans-serif", fontWeight: 900 }
@@ -58,43 +58,63 @@ export default function Auth() {
     )
   }
 
+  const FEATURES = [
+    { Icon: IconRobot,      key: 'auth_feat_ai' },
+    { Icon: IconSwords,     key: 'auth_feat_duel' },
+    { Icon: IconCrown,      key: 'auth_feat_rank' },
+    { Icon: IconGraduation, key: 'auth_feat_school' },
+  ]
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex' }}>
       {/* Left hero panel */}
       <div style={{
         flex: 1, background: '#2E4C8C', display: 'flex', flexDirection: 'column',
-        justifyContent: 'flex-end', padding: '48px 52px',
+        justifyContent: 'space-between', padding: '52px 56px',
         position: 'relative', overflow: 'hidden',
         minHeight: '100vh',
       }}>
         {/* Decorative chess symbol */}
         <div style={{
-          position: 'absolute', top: 40, left: -30,
+          position: 'absolute', right: -60, bottom: -40,
           color: 'rgba(255,255,255,0.06)',
           lineHeight: 1, userSelect: 'none', pointerEvents: 'none',
-          transform: 'rotate(-8deg)',
+          transform: 'rotate(8deg)',
         }}>
-          <IconChessRook size={380} color="currentColor" />
+          <IconChessRook size={420} color="currentColor" />
         </div>
 
+        {/* Top — brand */}
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
             background: '#FA2D1A', color: 'var(--ink-light)',
             padding: '5px 16px', borderRadius: 999,
             fontSize: 11, fontWeight: 700, letterSpacing: 2,
-            marginBottom: 24,
+            marginBottom: 28,
           }}>
-            rpg chess · ai coach · duels
+            chess legends · kz
           </div>
 
-          <div style={{ ...display, fontSize: 88, color: 'var(--ink-light)', lineHeight: 0.88, marginBottom: 24 }}>
-            chessy
+          <div style={{ ...display, fontSize: 96, color: 'var(--ink-light)', lineHeight: 0.85, marginBottom: 20, letterSpacing: '-0.03em' }}>
+            играй<br />легенды.
           </div>
 
-          <p style={{ margin: 0, fontSize: 16, color: 'rgba(255,243,225,0.65)', maxWidth: 320, lineHeight: 1.6 }}>
+          <p style={{ margin: 0, fontSize: 17, color: 'rgba(255,243,225,0.72)', maxWidth: 380, lineHeight: 1.5 }}>
             {t('auth_tagline')}
           </p>
+        </div>
+
+        {/* Bottom — feature bullets */}
+        <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px 28px', maxWidth: 460 }}>
+          {FEATURES.map(({ Icon, key }) => (
+            <div key={key} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, color: 'rgba(255,243,225,0.85)' }}>
+              <span style={{ flexShrink: 0, marginTop: 1, color: 'var(--ink-light)' }}>
+                <Icon size={20} color="currentColor" />
+              </span>
+              <span style={{ fontSize: 13, lineHeight: 1.35 }}>{t(key)}</span>
+            </div>
+          ))}
         </div>
       </div>
 

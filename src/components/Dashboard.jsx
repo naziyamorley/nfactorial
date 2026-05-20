@@ -155,14 +155,25 @@ export default function Dashboard({ profile, onStartGame, onSpendCoins }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, marginBottom: 28 }}>
 
         {/* vs AI */}
-        <div style={{ background: 'var(--bg-card)', border: '1.5px solid var(--border)', borderRadius: 20, padding: 24, display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-            <div style={{ ...display, fontSize: 32, color: 'var(--text)' }}>vs ai</div>
-            <IconRobot size={36} color="var(--accent-blue)" />
+        <div className="card-hover" style={{
+          background: 'var(--bg-card)',
+          border: '1.5px solid var(--border)',
+          borderTop: '4px solid var(--accent-blue)',
+          borderRadius: 20, padding: 24, display: 'flex', flexDirection: 'column',
+          position: 'relative', overflow: 'hidden',
+        }}>
+          <div style={{ position: 'absolute', right: -18, top: -10, color: 'var(--accent-blue)', opacity: 0.08, pointerEvents: 'none' }}>
+            <IconRobot size={120} color="currentColor" />
           </div>
-          <p style={{ fontSize: 13, color: 'var(--muted)', margin: '0 0 16px' }}>{t('vs_ai_desc')}</p>
+          <div style={{ position: 'relative' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+              <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: 'var(--accent-blue)', padding: '3px 8px', background: 'var(--tint-blue)', borderRadius: 6 }}>solo</span>
+            </div>
+            <div style={{ ...display, fontSize: 32, color: 'var(--text)', marginBottom: 4 }}>vs ai</div>
+            <p style={{ fontSize: 13, color: 'var(--muted)', margin: '0 0 18px' }}>{t('vs_ai_desc')}</p>
+          </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 20, flex: 1 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 20, flex: 1, position: 'relative' }}>
             {AI_LEVEL_DEFS.map(({ level, key, icon }) => {
               const active = selectedLevel === level
               return (
@@ -184,37 +195,41 @@ export default function Dashboard({ profile, onStartGame, onSpendCoins }) {
             })}
           </div>
 
-          <div style={{
-            background: `repeating-conic-gradient(var(--text) 0% 25%, #ffffff 0% 50%) 0 0 / 16px 16px`,
-            borderRadius: 16, padding: 5, border: '1.5px solid var(--text)',
-          }}>
-            <button onClick={() => onStartGame({ mode: 'vs_ai', skillLevel: selectedLevel })} style={{
-              width: '100%', padding: '11px', borderRadius: 11, border: 'none', cursor: 'pointer',
-              background: '#FA2D1A', color: '#fff',
-              fontFamily: "'Oswald', sans-serif", fontWeight: 900, fontSize: 16, letterSpacing: 1,
-            }}>
-              {t('play')}
-            </button>
-          </div>
+          <button
+            className="btn-cta"
+            onClick={() => onStartGame({ mode: 'vs_ai', skillLevel: selectedLevel })}
+            style={{ background: 'var(--accent-blue)', color: 'var(--ink-light)', width: '100%', position: 'relative' }}
+          >
+            {t('play')} <IconArrowRight size={16} color="currentColor" />
+          </button>
         </div>
 
         {/* Duel */}
-        <div style={{ background: 'var(--bg-card)', border: '1.5px solid var(--border)', borderRadius: 20, padding: 24, display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-            <div style={{ ...display, fontSize: 32, color: 'var(--text)' }}>{t('duel_title')}</div>
-            <IconSwords size={36} color="#FA2D1A" />
+        <div className="card-hover" style={{
+          background: 'var(--bg-card)',
+          border: '1.5px solid var(--border)',
+          borderTop: '4px solid var(--accent-red)',
+          borderRadius: 20, padding: 24, display: 'flex', flexDirection: 'column',
+          position: 'relative', overflow: 'hidden',
+        }}>
+          <div style={{ position: 'absolute', right: -18, top: -10, color: 'var(--accent-red)', opacity: 0.08, pointerEvents: 'none' }}>
+            <IconSwords size={120} color="currentColor" />
           </div>
-          <p style={{ fontSize: 13, color: 'var(--muted)', margin: '0 0 16px' }}>{t('duel_desc')}</p>
+          <div style={{ position: 'relative' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+              <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: 'var(--accent-red)', padding: '3px 8px', background: 'var(--tint-red)', borderRadius: 6 }}>pvp</span>
+            </div>
+            <div style={{ ...display, fontSize: 32, color: 'var(--text)', marginBottom: 4 }}>{t('duel_title')}</div>
+            <p style={{ fontSize: 13, color: 'var(--muted)', margin: '0 0 18px' }}>{t('duel_desc')}</p>
+          </div>
 
           <div style={{ flex: 1 }} />
 
-          <button onClick={() => onStartGame({ mode: 'duel' })} style={{
-            padding: '13px', borderRadius: 14, marginBottom: 8,
-            border: '1.5px solid var(--text)', cursor: 'pointer',
-            background: 'var(--text)', color: 'var(--bg)',
-            fontWeight: 700, fontSize: 14,
-            fontFamily: "'Oswald', sans-serif", letterSpacing: 1,
-          }}>
+          <button
+            className="btn-cta"
+            onClick={() => onStartGame({ mode: 'duel' })}
+            style={{ background: 'var(--text)', color: 'var(--bg)', width: '100%', marginBottom: 10, position: 'relative' }}
+          >
             {t('duel_local')}
           </button>
 
