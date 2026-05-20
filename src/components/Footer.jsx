@@ -18,7 +18,7 @@ export default function Footer() {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <IconChessKing size={28} color="currentColor" />
-            <span style={{ ...display, fontSize: 22, letterSpacing: '-0.01em' }}>chess legends</span>
+            <span style={{ ...display, fontSize: 22, letterSpacing: '-0.01em' }}>chessy</span>
           </div>
           <p style={{ margin: 0, fontSize: 12, color: 'rgba(255,243,225,0.6)', lineHeight: 1.55, maxWidth: 240 }}>
             {t('footer_tagline')}
@@ -60,7 +60,7 @@ export default function Footer() {
 
       <div style={{ borderTop: '1px solid rgba(255,243,225,0.1)', marginTop: 36, paddingTop: 20, maxWidth: 1100, marginLeft: 'auto', marginRight: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
         <span style={{ fontSize: 11, color: 'rgba(255,243,225,0.4)' }}>
-          © 2026 Chess Legends — {t('footer_made_in_kz')}
+          © 2026 Chessy — {t('footer_made_in_kz')}
         </span>
         <span style={{ fontSize: 11, color: 'rgba(255,243,225,0.4)' }}>
           {t('footer_built_with')}

@@ -526,3 +526,66 @@ export async function deleteChessLocation(id) {
     .eq('id', id)
   if (error) throw error
 }
+
+// ─── Location requests (user submits, admin reviews) ──────────────────────────
+
+export async function addLocationRequest(req) {
+  const { data, error } = await supabase
+    .from('location_requests')
+    .insert(req)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function getLocationRequests({ status = null } = {}) {
+  let q = supabase
+    .from('location_requests')
+    .select('*, requester:profiles!requested_by(username)')
+    .order('created_at', { ascending: false })
+  if (status) q = q.eq('status', status)
+  const { data, error } = await q
+  if (error) throw error
+  return data || []
+}
+
+export async function approveLocationRequest(requestId, adminId) {
+  const { data: req, error: fetchErr } = await supabase
+    .from('location_requests')
+    .select('*')
+    .eq('id', requestId)
+    .single()
+  if (fetchErr) throw fetchErr
+
+  const { data: created, error: insertErr } = await supabase
+    .from('chess_locations')
+    .insert({
+      name: req.name, type: req.type, city: req.city, address: req.address,
+      lat: req.lat, lon: req.lon,
+      description: req.description, contact: req.contact, schedule: req.schedule,
+      verified: true, added_by: req.requested_by,
+    })
+    .select()
+    .single()
+  if (insertErr) throw insertErr
+
+  const { error: updateErr } = await supabase
+    .from('location_requests')
+    .update({ status: 'approved', reviewed_by: adminId, reviewed_at: new Date().toISOString() })
+    .eq('id', requestId)
+  if (updateErr) throw updateErr
+
+  return created
+}
+
+export async function rejectLocationRequest(requestId, adminId, note = null) {
+  const { error } = await supabase
+    .from('location_requests')
+    .update({
+      status: 'rejected', reviewed_by: adminId,
+      review_note: note, reviewed_at: new Date().toISOString(),
+    })
+    .eq('id', requestId)
+  if (error) throw error
+}

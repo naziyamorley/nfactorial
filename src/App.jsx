@@ -8,6 +8,8 @@ import Auth from './components/Auth'
 import ClassSelector from './components/ClassSelector'
 import OnboardingLevel from './components/OnboardingLevel'
 import TopBar from './components/TopBar'
+import Navbar from './components/Navbar'
+import { useIsMobile } from './hooks/useMediaQuery'
 import Dashboard from './components/Dashboard'
 import ChessGame from './components/ChessGame'
 import AICoach from './components/AICoach'
@@ -113,6 +115,7 @@ export default function App() {
   const { user, profile, loading, applyGameResult, setProfile, refreshProfile } = useUser()
   const { t } = useLang()
   const navigate = useNavigate()
+  const isMobile = useIsMobile()
 
   // When Supabase not configured — use demo mode
   const DEMO_PROFILE = { ...BASE_DEMO, username: t('guest') }
@@ -188,10 +191,11 @@ export default function App() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', minHeight: '100dvh', background: 'var(--bg)' }}>
-      <TopBar profile={effectiveProfile} />
+    <div style={{ display: 'flex', minHeight: '100vh', minHeight: '100dvh', background: 'var(--bg)' }}>
+      {!isMobile && <Navbar profile={effectiveProfile} />}
 
       <div className="app-main" style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+        <TopBar profile={effectiveProfile} />
         {isDemo && (
           <div style={{ background: '#FA2D1A', textAlign: 'center', padding: '8px 16px', flexShrink: 0 }}>
             <p style={{ color: 'var(--ink-light)', fontSize: 12, margin: 0, fontWeight: 600 }}>
@@ -249,7 +253,7 @@ export default function App() {
               path="/map"
               element={
                 <Suspense fallback={<RouteFallback />}>
-                  <MapPage />
+                  <MapPage profile={effectiveProfile} />
                 </Suspense>
               }
             />

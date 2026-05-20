@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-le
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useLang } from '../lib/i18n'
-import { getChessLocations, addChessLocation, deleteChessLocation, supabase } from '../lib/supabase'
+import { getChessLocations, addChessLocation, addLocationRequest, deleteChessLocation, supabase } from '../lib/supabase'
 import { IconPawn, IconGraduation, IconSchool, IconTree, IconTrophy, IconPin, IconCheck } from './Icons'
 
 const display = { fontFamily: "'Oswald', sans-serif", fontWeight: 900 }
@@ -91,8 +91,9 @@ function FlyTo({ position, zoom = 13 }) {
   return null
 }
 
-export default function MapPage() {
+export default function MapPage({ profile }) {
   const { t } = useLang()
+  const isAdmin = !!profile?.is_admin
   const [locations, setLocations]     = useState([])
   const [loading, setLoading]         = useState(true)
   const [me, setMe]                   = useState(null)        // { id }
@@ -186,7 +187,9 @@ export default function MapPage() {
         <div style={{ fontSize: 13, color: 'var(--muted-soft)' }}>{t('map_subtitle')}</div>
         <div style={{ flex: 1 }} />
         {me && (
-          <button onClick={() => setShowAdd(true)} style={btnPrimary}>+ {t('map_add_btn')}</button>
+          <button onClick={() => setShowAdd(true)} style={btnPrimary}>
+            + {isAdmin ? t('map_add_btn') : (t('map_request_btn') || 'предложить место')}
+          </button>
         )}
       </div>
 
@@ -345,8 +348,10 @@ export default function MapPage() {
         <AddLocationModal
           t={t}
           userId={me.id}
+          isAdmin={isAdmin}
           onClose={() => setShowAdd(false)}
           onAdded={loc => { setLocations(prev => [loc, ...prev]); setShowAdd(false); setUserPos([loc.lat, loc.lon]) }}
+          onRequested={() => { setShowAdd(false); alert(t('map_request_sent') || 'заявка отправлена на модерацию') }}
         />
       )}
     </div>
@@ -403,7 +408,7 @@ function LocationPopup({ loc, me, t, userPos, onDelete }) {
 }
 
 // ── Add modal ─────────────────────────────────────────────────────────────────
-function AddLocationModal({ userId, onClose, onAdded, t }) {
+function AddLocationModal({ userId, isAdmin, onClose, onAdded, onRequested, t }) {
   const [form, setForm]   = useState({
     name: '', type: 'club', city: '', address: '', description: '', contact: '', schedule: '',
   })
@@ -422,7 +427,7 @@ function AddLocationModal({ userId, onClose, onAdded, t }) {
     try {
       const geo = await geocode(`${form.address}, ${form.city}`)
       if (!geo) { setError(t('map_address_not_found')); return }
-      const created = await addChessLocation({
+      const payload = {
         name: form.name.trim(),
         type: form.type,
         city: form.city.trim(),
@@ -432,9 +437,14 @@ function AddLocationModal({ userId, onClose, onAdded, t }) {
         description: form.description.trim() || null,
         contact: form.contact.trim() || null,
         schedule: form.schedule.trim() || null,
-        added_by: userId,
-      })
-      onAdded(created)
+      }
+      if (isAdmin) {
+        const created = await addChessLocation({ ...payload, added_by: userId, verified: true })
+        onAdded(created)
+      } else {
+        await addLocationRequest({ ...payload, requested_by: userId })
+        onRequested()
+      }
     } catch (err) {
       console.error(err)
       setError(err.message || 'error')
@@ -458,8 +468,12 @@ function AddLocationModal({ userId, onClose, onAdded, t }) {
         background: 'var(--bg-card)', borderRadius: 20, padding: 28, maxWidth: 460, width: '100%',
         maxHeight: '90vh', overflowY: 'auto',
       }}>
-        <div style={{ ...display, fontSize: 28, color: 'var(--text)', marginBottom: 6 }}>{t('map_add_title')}</div>
-        <p style={{ margin: '0 0 18px', fontSize: 12, color: 'var(--muted)' }}>{t('map_add_hint')}</p>
+        <div style={{ ...display, fontSize: 28, color: 'var(--text)', marginBottom: 6 }}>
+          {isAdmin ? t('map_add_title') : (t('map_request_title') || 'предложить место')}
+        </div>
+        <p style={{ margin: '0 0 18px', fontSize: 12, color: 'var(--muted)' }}>
+          {isAdmin ? t('map_add_hint') : (t('map_request_hint') || 'модератор проверит и добавит место на карту')}
+        </p>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <FieldLabel label={t('map_field_name')}>
