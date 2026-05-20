@@ -21,7 +21,7 @@ const CLASSES_BASE = [
     id: 'defender',
     icon: <IconShield size={44} />,
     nameKey: 'class_defender',
-    accent: '#2E4C8C',
+    accent: '#7C3AED',
     bg: 'var(--tint-blue)',
     border: 'var(--tint-blue-border)',
     badgeKey: 'class_defender_badge',

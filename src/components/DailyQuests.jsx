@@ -70,7 +70,7 @@ export default function DailyQuests({ onEarnReward }) {
                 <div style={{ height: 4, background: 'var(--border-soft)', borderRadius: 99, overflow: 'hidden' }}>
                   <div style={{
                     height: '100%', width: `${pct}%`,
-                    background: claimed ? 'var(--muted-soft)' : done ? '#1A7A4A' : '#2E4C8C',
+                    background: claimed ? 'var(--muted-soft)' : done ? '#1A7A4A' : '#7C3AED',
                     borderRadius: 99, transition: 'width 0.3s',
                   }} />
                 </div>

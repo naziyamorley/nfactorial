@@ -126,7 +126,7 @@ export default function TournamentPage({ profile }) {
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
-        <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTop: '3px solid #2E4C8C', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTop: '3px solid #7C3AED', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
       </div>
     )
   }
@@ -387,7 +387,7 @@ export default function TournamentPage({ profile }) {
                     {isWinner ? <IconCrown size={22} color="currentColor" /> : idx + 1}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ ...display, fontSize: 16, color: isMe ? '#2E4C8C' : 'var(--text)', lineHeight: 1 }}>
+                    <div style={{ ...display, fontSize: 16, color: isMe ? '#7C3AED' : 'var(--text)', lineHeight: 1 }}>
                       {p.username}{isMe ? ` · ${t('you_label')}` : ''}
                     </div>
                     <div style={{ fontSize: 11, color: 'var(--muted-soft)' }}>

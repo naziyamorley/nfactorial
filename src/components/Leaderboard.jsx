@@ -49,7 +49,7 @@ export default function Leaderboard({ currentProfile }) {
               <button key={c} onClick={() => setCity(c)} style={{
                 padding: '8px 14px', borderRadius: 10, border: 'none', cursor: 'pointer',
                 fontSize: 12, fontWeight: 700, transition: 'all 0.15s',
-                background: city === c ? '#2E4C8C' : 'transparent',
+                background: city === c ? '#7C3AED' : 'transparent',
                 color: city === c ? 'var(--bg)' : 'var(--muted)',
                 fontFamily: "'Oswald', sans-serif", letterSpacing: 0.5,
                 whiteSpace: 'nowrap',
@@ -65,7 +65,7 @@ export default function Leaderboard({ currentProfile }) {
             onChange={e => e.target.value && setCity(e.target.value)}
             style={{
               padding: '8px 14px', borderRadius: 10, border: '1.5px solid var(--border)',
-              background: KZ_CITIES.slice(4).includes(city) ? '#2E4C8C' : 'var(--border)',
+              background: KZ_CITIES.slice(4).includes(city) ? '#7C3AED' : 'var(--border)',
               color: KZ_CITIES.slice(4).includes(city) ? 'var(--bg)' : 'var(--muted)',
               fontSize: 12, fontWeight: 700, cursor: 'pointer',
               fontFamily: "'Oswald', sans-serif',",
@@ -82,7 +82,7 @@ export default function Leaderboard({ currentProfile }) {
       {/* Active city badge */}
       {city !== 'all' && (
         <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 12, background: '#2E4C8C', color: 'var(--ink-light)', padding: '4px 12px', borderRadius: 999, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+          <span style={{ fontSize: 12, background: '#7C3AED', color: 'var(--ink-light)', padding: '4px 12px', borderRadius: 999, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
             <IconPin size={12} color="currentColor" /> {city}
           </span>
           <button onClick={() => setCity('all')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--muted-soft)' }}>
@@ -95,7 +95,7 @@ export default function Leaderboard({ currentProfile }) {
       <div style={{ background: 'var(--bg-card)', border: '1.5px solid var(--border)', borderRadius: 20, overflow: 'hidden' }}>
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
-            <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTop: '3px solid #2E4C8C', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+            <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTop: '3px solid #7C3AED', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
           </div>
         ) : data.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '64px 16px' }}>
@@ -166,7 +166,7 @@ export default function Leaderboard({ currentProfile }) {
                       <span style={{
                         fontSize: 12, fontWeight: 700, padding: '4px 10px', borderRadius: 999,
                         background: player.winrate >= 60 ? 'var(--tint-blue)' : player.winrate >= 40 ? 'var(--tint-amber)' : 'var(--tint-red)',
-                        color: player.winrate >= 60 ? '#2E4C8C' : player.winrate >= 40 ? '#92400e' : '#FA2D1A',
+                        color: player.winrate >= 60 ? '#7C3AED' : player.winrate >= 40 ? '#92400e' : '#FA2D1A',
                       }}>
                         {player.winrate}%
                       </span>

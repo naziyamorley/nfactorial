@@ -95,7 +95,7 @@ export default function CoachChat({ profile }) {
             <div style={{
               maxWidth: '72%', padding: '12px 16px', lineHeight: 1.6,
               borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-              background: msg.role === 'user' ? '#2E4C8C' : 'var(--bg-card)',
+              background: msg.role === 'user' ? '#7C3AED' : 'var(--bg-card)',
               border: msg.role === 'user' ? 'none' : '1.5px solid var(--border)',
               color: msg.role === 'user' ? 'var(--bg)' : 'var(--text)',
               fontSize: 14,

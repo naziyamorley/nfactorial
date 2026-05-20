@@ -10,7 +10,7 @@ import { useLang } from '../lib/i18n'
 
 const CLASS_STYLE = {
   attacker:  { icon: <IconSwords size={28} />, nameKey: 'class_attacker', accent: '#FA2D1A', bg: 'var(--tint-red)', border: 'var(--tint-red-border)' },
-  defender:  { icon: <IconShield size={28} />, nameKey: 'class_defender', accent: '#2E4C8C', bg: 'var(--tint-blue)', border: 'var(--tint-blue-border)' },
+  defender:  { icon: <IconShield size={28} />, nameKey: 'class_defender', accent: '#7C3AED', bg: 'var(--tint-blue)', border: 'var(--tint-blue-border)' },
   tactician: { icon: <IconKnight size={28} />, nameKey: 'class_tactician', accent: '#1A7A4A', bg: 'var(--tint-green)', border: 'var(--tint-green-border)' },
 }
 
@@ -53,7 +53,7 @@ export default function Dashboard({ profile, onStartGame, onSpendCoins }) {
 
       {/* ── Hero ── */}
       <div style={{
-        background: '#2E4C8C', borderRadius: 24, padding: '32px 36px',
+        background: '#7C3AED', borderRadius: 24, padding: '32px 36px',
         marginBottom: 28, position: 'relative', overflow: 'hidden',
         display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 20,
         minHeight: 180,
@@ -141,7 +141,7 @@ export default function Dashboard({ profile, onStartGame, onSpendCoins }) {
           <span>{profile?.xp || 0} / {(profile?.level || 1) * 500} xp</span>
         </div>
         <div style={{ height: 8, background: 'var(--border-soft)', borderRadius: 99, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${xpPct}%`, background: '#2E4C8C', borderRadius: 99, transition: 'width 0.6s' }} />
+          <div style={{ height: '100%', width: `${xpPct}%`, background: '#7C3AED', borderRadius: 99, transition: 'width 0.6s' }} />
         </div>
       </div>
 
@@ -180,7 +180,7 @@ export default function Dashboard({ profile, onStartGame, onSpendCoins }) {
                 <button key={level} onClick={() => setSelectedLevel(level)} style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   padding: '9px 14px', borderRadius: 12, fontSize: 13, cursor: 'pointer',
-                  border: active ? '1.5px solid #2E4C8C' : '1.5px solid var(--border)',
+                  border: active ? '1.5px solid #7C3AED' : '1.5px solid var(--border)',
                   background: active ? 'var(--tint-blue)' : 'transparent',
                   color: active ? 'var(--accent-blue)' : 'var(--muted)', fontWeight: active ? 700 : 400,
                   transition: 'all 0.12s',
@@ -241,7 +241,7 @@ export default function Dashboard({ profile, onStartGame, onSpendCoins }) {
               </div>
               <button onClick={() => onStartGame({ mode: 'duel', inviteCode: duelLink.split('/').pop() })} style={{
                 width: '100%', padding: '11px', borderRadius: 12, border: 'none', cursor: 'pointer',
-                background: '#2E4C8C', color: 'var(--ink-light)', fontWeight: 700, fontSize: 13,
+                background: '#7C3AED', color: 'var(--ink-light)', fontWeight: 700, fontSize: 13,
                 fontFamily: "'Oswald', sans-serif", letterSpacing: 1,
               }}>
                 {t('open_board')}

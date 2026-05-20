@@ -29,7 +29,7 @@ export default function AICoach({ pgn, playerClass, result, durationS, coinsDelt
     t('rating_needs_work')
 
   const RESULT_CFG = {
-    win:  { icon: <IconCrown size={40} />,     label: t('coach_result_win'),  color: 'var(--ink-light)', accent: '#2E4C8C' },
+    win:  { icon: <IconCrown size={40} />,     label: t('coach_result_win'),  color: 'var(--ink-light)', accent: '#7C3AED' },
     loss: { icon: <IconSkull size={40} />,     label: t('coach_result_loss'), color: '#FA2D1A', accent: '#FA2D1A' },
     draw: { icon: <IconHandshake size={40} />, label: t('coach_result_draw'), color: 'rgba(255,243,225,0.65)', accent: 'rgba(255,243,225,0.65)' },
   }
@@ -188,7 +188,7 @@ export default function AICoach({ pgn, playerClass, result, durationS, coinsDelt
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                     <IconSparkle size={18} color="#6B8FD4" />
                     <span style={{ ...display, fontSize: 20, color: '#6B8FD4', lineHeight: 1 }}>{t('coach_best_move')}</span>
-                    <span style={{ marginLeft: 'auto', fontSize: 11, background: '#2E4C8C', color: 'var(--ink-light)', padding: '2px 9px', borderRadius: 5, fontFamily: 'monospace', fontWeight: 700 }}>
+                    <span style={{ marginLeft: 'auto', fontSize: 11, background: '#7C3AED', color: 'var(--ink-light)', padding: '2px 9px', borderRadius: 5, fontFamily: 'monospace', fontWeight: 700 }}>
                       {analysis.best_move.move}
                     </span>
                   </div>
@@ -265,7 +265,7 @@ export default function AICoach({ pgn, playerClass, result, durationS, coinsDelt
                     )}
                     <div style={{
                       maxWidth: '75%', padding: '10px 14px', borderRadius: 12,
-                      background: msg.role === 'user' ? '#2E4C8C' : '#242424',
+                      background: msg.role === 'user' ? '#7C3AED' : '#242424',
                       border: '1px solid ' + (msg.role === 'user' ? '#3a5fa8' : '#333'),
                       fontSize: 13, color: msg.role === 'user' ? 'var(--ink-light)' : 'rgba(255,243,225,0.75)',
                       lineHeight: 1.55,

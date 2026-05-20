@@ -167,7 +167,7 @@ export default function Landing() {
 
       {/* Final CTA */}
       <section style={{
-        background: 'linear-gradient(135deg, #2E4C8C 0%, #1A2E5C 100%)',
+        background: 'linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%)',
         padding: '72px 28px', color: 'var(--ink-light)',
         textAlign: 'center', position: 'relative', overflow: 'hidden',
       }}>

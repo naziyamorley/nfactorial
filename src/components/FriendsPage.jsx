@@ -23,7 +23,7 @@ import {
 } from '../lib/supabase'
 
 const display = { fontFamily: "'Oswald', sans-serif", fontWeight: 900 }
-const CLASS_COLOR = { attacker: '#FA2D1A', defender: '#2E4C8C', tactician: '#1A7A4A' }
+const CLASS_COLOR = { attacker: '#FA2D1A', defender: '#7C3AED', tactician: '#1A7A4A' }
 
 export default function FriendsPage({ profile, onViewProfile }) {
   const { t }  = useLang()
@@ -197,7 +197,7 @@ export default function FriendsPage({ profile, onViewProfile }) {
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: '48px 0' }}>
-          <div style={{ display: 'inline-block', width: 28, height: 28, border: '3px solid var(--border)', borderTop: '3px solid #2E4C8C', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+          <div style={{ display: 'inline-block', width: 28, height: 28, border: '3px solid var(--border)', borderTop: '3px solid #7C3AED', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         </div>
       ) : (
         <>
@@ -279,7 +279,7 @@ export default function FriendsPage({ profile, onViewProfile }) {
                 </div>
               ) : searching ? (
                 <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                  <div style={{ display: 'inline-block', width: 24, height: 24, border: '3px solid var(--border)', borderTop: '3px solid #2E4C8C', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                  <div style={{ display: 'inline-block', width: 24, height: 24, border: '3px solid var(--border)', borderTop: '3px solid #7C3AED', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
                 </div>
               ) : searchResults.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--muted-soft)', fontSize: 14 }}>

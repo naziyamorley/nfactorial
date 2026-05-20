@@ -213,7 +213,7 @@ export default function ChessGame({ profile, mode = 'vs_ai', skillLevel = 10, in
             fontSize: 11, padding: '5px 14px', borderRadius: 999, fontWeight: 700,
             fontFamily: "'Oswald', sans-serif", letterSpacing: 0.5,
             background: waitingFor ? 'var(--bg-tag)' : thinking ? 'var(--tint-blue)' : finished ? 'var(--bg-card-soft)' : myTurn ? 'var(--tint-red)' : 'var(--tint-blue)',
-            color: waitingFor ? 'var(--muted-soft)' : thinking ? '#2E4C8C' : finished ? 'var(--muted-soft)' : myTurn ? '#FA2D1A' : '#2E4C8C',
+            color: waitingFor ? 'var(--muted-soft)' : thinking ? '#7C3AED' : finished ? 'var(--muted-soft)' : myTurn ? '#FA2D1A' : '#7C3AED',
             border: `1.5px solid ${waitingFor ? 'var(--border)' : thinking ? 'var(--tint-blue-border)' : finished ? 'var(--border)' : myTurn ? 'var(--tint-red-border)' : 'var(--tint-blue-border)'}`,
           }}>
             {waitingFor === 'opponent'

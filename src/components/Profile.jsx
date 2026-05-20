@@ -18,7 +18,7 @@ import { useLang } from '../lib/i18n'
 
 const CLASS_STYLE = {
   attacker:  { icon: <IconSwords size={38} />, nameKey: 'class_attacker', accent: '#FA2D1A', bg: 'var(--tint-red)', border: 'var(--tint-red-border)' },
-  defender:  { icon: <IconShield size={38} />, nameKey: 'class_defender', accent: '#2E4C8C', bg: 'var(--tint-blue)', border: 'var(--tint-blue-border)' },
+  defender:  { icon: <IconShield size={38} />, nameKey: 'class_defender', accent: '#7C3AED', bg: 'var(--tint-blue)', border: 'var(--tint-blue-border)' },
   tactician: { icon: <IconKnight size={38} />, nameKey: 'class_tactician', accent: '#1A7A4A', bg: 'var(--tint-green)', border: 'var(--tint-green-border)' },
 }
 
@@ -70,7 +70,7 @@ export default function Profile({ profile: currentProfile, userId: userIdProp })
 
   if (loading) return (
     <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
-      <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTop: '3px solid #2E4C8C', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTop: '3px solid #7C3AED', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
     </div>
   )
 
@@ -87,7 +87,7 @@ export default function Profile({ profile: currentProfile, userId: userIdProp })
 
       {/* Hero */}
       <div style={{
-        background: '#2E4C8C', borderRadius: 24, padding: '32px 36px', marginBottom: 20,
+        background: '#7C3AED', borderRadius: 24, padding: '32px 36px', marginBottom: 20,
         position: 'relative', overflow: 'hidden',
       }}>
         <div style={{ position: 'absolute', right: -20, top: -40, ...display, fontSize: 200, color: 'rgba(255,255,255,0.05)', lineHeight: 1 }}>
@@ -121,7 +121,7 @@ export default function Profile({ profile: currentProfile, userId: userIdProp })
       {/* Stats row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 16 }}>
         {[
-          { label: t('rating_label'), value: profile.rating, accent: '#2E4C8C' },
+          { label: t('rating_label'), value: profile.rating, accent: '#7C3AED' },
           { label: t('games_label'),  value: profile.games_played },
           { label: t('stat_winrate'), value: `${winrate}%`, accent: winrate >= 60 ? '#1A7A4A' : winrate >= 40 ? '#92400e' : '#FA2D1A' },
           { label: t('xp_label'),     value: profile.xp, accent: '#7c3aed' },
@@ -140,7 +140,7 @@ export default function Profile({ profile: currentProfile, userId: userIdProp })
           <span>{profile.xp % 500} / 500 xp → {t('level_short')}{profile.level + 1}</span>
         </div>
         <div style={{ height: 8, background: 'var(--border-soft)', borderRadius: 99, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${xpPct}%`, background: '#2E4C8C', borderRadius: 99 }} />
+          <div style={{ height: '100%', width: `${xpPct}%`, background: '#7C3AED', borderRadius: 99 }} />
         </div>
       </div>
 
@@ -209,7 +209,7 @@ export default function Profile({ profile: currentProfile, userId: userIdProp })
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   {game.game_rating && (
-                    <div style={{ ...display, fontSize: 22, color: game.game_rating >= 70 ? '#2E4C8C' : game.game_rating >= 50 ? '#92400e' : '#FA2D1A' }}>
+                    <div style={{ ...display, fontSize: 22, color: game.game_rating >= 70 ? '#7C3AED' : game.game_rating >= 50 ? '#92400e' : '#FA2D1A' }}>
                       {game.game_rating}
                     </div>
                   )}

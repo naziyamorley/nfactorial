@@ -34,7 +34,7 @@ const COMPETITIONS = [
     type: 'offline',
     prize: '$10 000',
     url: 'https://chess-results.com',
-    gradient: 'linear-gradient(135deg, #2E4C8C 0%, #1A2E5C 100%)',
+    gradient: 'linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%)',
     icon: <IconTrophy size={28} color="var(--ink-light)" />,
   },
   {

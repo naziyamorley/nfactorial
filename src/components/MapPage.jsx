@@ -17,7 +17,7 @@ const KZ_BOUNDS = [[40.5, 46.0], [55.7, 88.0]]
 const KZ_MIN_ZOOM = 5
 
 const TYPE_META = {
-  club:       { emoji: '♟', Icon: IconPawn,       color: '#2E4C8C', labelKey: 'map_type_club' },
+  club:       { emoji: '♟', Icon: IconPawn,       color: '#7C3AED', labelKey: 'map_type_club' },
   section:    { emoji: '◆', Icon: IconGraduation, color: 'var(--accent-green)', labelKey: 'map_type_section' },
   school:     { emoji: '▲', Icon: IconSchool,     color: '#7c3aed', labelKey: 'map_type_school' },
   outdoor:    { emoji: '◉', Icon: IconTree,       color: '#92400e', labelKey: 'map_type_outdoor' },

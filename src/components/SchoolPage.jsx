@@ -73,7 +73,7 @@ export default function SchoolPage({ navigate }) {
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}>
-        <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTop: '3px solid #2E4C8C', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTop: '3px solid #7C3AED', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
       </div>
     )
   }
@@ -118,7 +118,7 @@ function RoleSelector({ onSelect, t }) {
       <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 40, lineHeight: 1.6 }}>{t('school_desc')}</p>
       <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
         <button onClick={() => onSelect('teacher')} style={{
-          ...btnStyle('#2E4C8C', 'var(--bg)', '#2E4C8C'),
+          ...btnStyle('#7C3AED', 'var(--bg)', '#7C3AED'),
           padding: '24px 36px', borderRadius: 18, fontSize: 18,
           display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
         }}>
@@ -172,7 +172,7 @@ function CreateClassForm({ teacherId, onCreated, t }) {
           <p style={{ margin: 0, fontSize: 12, color: '#FA2D1A', background: 'var(--tint-red)', border: '1.5px solid var(--tint-red-border)', borderRadius: 10, padding: '10px 14px' }}>{error}</p>
         )}
         <button onClick={handleCreate} disabled={busy} style={{
-          ...btnStyle('#2E4C8C', 'var(--bg)', '#2E4C8C'),
+          ...btnStyle('#7C3AED', 'var(--bg)', '#7C3AED'),
           padding: '14px', marginTop: 4, fontSize: 16, opacity: busy ? 0.6 : 1,
         }}>
           {t('create_class')} →
@@ -308,7 +308,7 @@ function TeacherDashboard({ t, cls, onLeft }) {
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', letterSpacing: 1 }}>{t('class_code')}</div>
             <div style={{ ...display, fontSize: 32, color: 'var(--accent-blue)', letterSpacing: 4 }}>{cls.join_code}</div>
           </div>
-          <button onClick={copyCode} style={{ ...btnStyle(copied ? '#2E4C8C' : 'var(--bg-card)', copied ? 'var(--bg)' : '#2E4C8C', 'var(--tint-blue-border)') }}>
+          <button onClick={copyCode} style={{ ...btnStyle(copied ? '#7C3AED' : 'var(--bg-card)', copied ? 'var(--bg)' : '#7C3AED', 'var(--tint-blue-border)') }}>
             {copied ? <IconCheck size={14} color="currentColor" /> : t('copy_code')}
           </button>
         </div>
@@ -324,7 +324,7 @@ function TeacherDashboard({ t, cls, onLeft }) {
           <button key={id} onClick={() => setTab(id)} style={{
             padding: '9px 20px', borderRadius: 10, border: 'none', cursor: 'pointer',
             fontSize: 13, fontWeight: 700, transition: 'all 0.15s',
-            background: tab === id ? '#2E4C8C' : 'transparent',
+            background: tab === id ? '#7C3AED' : 'transparent',
             color: tab === id ? 'var(--bg)' : 'var(--muted)',
             fontFamily: "'Oswald', sans-serif",
             display: 'flex', alignItems: 'center', gap: 6,
@@ -336,7 +336,7 @@ function TeacherDashboard({ t, cls, onLeft }) {
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: '40px 0' }}>
-          <div style={{ display: 'inline-block', width: 28, height: 28, border: '3px solid var(--border)', borderTop: '3px solid #2E4C8C', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+          <div style={{ display: 'inline-block', width: 28, height: 28, border: '3px solid var(--border)', borderTop: '3px solid #7C3AED', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         </div>
       ) : (
         <>
@@ -370,7 +370,7 @@ function TeacherDashboard({ t, cls, onLeft }) {
                           <span style={{
                             fontSize: 12, fontWeight: 700, padding: '3px 10px', borderRadius: 999,
                             background: s.games_played > 0 && s.games_won / s.games_played >= 0.6 ? 'var(--tint-blue)' : 'var(--tint-red)',
-                            color: s.games_played > 0 && s.games_won / s.games_played >= 0.6 ? '#2E4C8C' : '#FA2D1A',
+                            color: s.games_played > 0 && s.games_won / s.games_played >= 0.6 ? '#7C3AED' : '#FA2D1A',
                           }}>
                             {s.games_played > 0 ? Math.round(s.games_won / s.games_played * 100) : 0}%
                           </span>
@@ -437,9 +437,9 @@ function TeacherDashboard({ t, cls, onLeft }) {
                         disabled={isAssigned || busy}
                         style={{
                           ...btnStyle(
-                            isAssigned ? 'var(--tint-blue)' : '#2E4C8C',
-                            isAssigned ? '#2E4C8C' : 'var(--bg)',
-                            isAssigned ? 'var(--tint-blue-border)' : '#2E4C8C',
+                            isAssigned ? 'var(--tint-blue)' : '#7C3AED',
+                            isAssigned ? '#7C3AED' : 'var(--bg)',
+                            isAssigned ? 'var(--tint-blue-border)' : '#7C3AED',
                           ),
                           opacity: isAssigned ? 0.7 : 1,
                         }}
@@ -545,7 +545,7 @@ function StudentDashboard({ t, cls, profile, navigate, onLeft }) {
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: '40px 0' }}>
-          <div style={{ display: 'inline-block', width: 28, height: 28, border: '3px solid var(--border)', borderTop: '3px solid #2E4C8C', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+          <div style={{ display: 'inline-block', width: 28, height: 28, border: '3px solid var(--border)', borderTop: '3px solid #7C3AED', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         </div>
       ) : (
         <>
@@ -635,7 +635,7 @@ function StudentDashboard({ t, cls, profile, navigate, onLeft }) {
                             <span style={{
                               fontSize: 12, fontWeight: 700, padding: '3px 10px', borderRadius: 999,
                               background: s.games_played > 0 && s.games_won / s.games_played >= 0.6 ? 'var(--tint-blue)' : 'var(--tint-red)',
-                              color: s.games_played > 0 && s.games_won / s.games_played >= 0.6 ? '#2E4C8C' : '#FA2D1A',
+                              color: s.games_played > 0 && s.games_won / s.games_played >= 0.6 ? '#7C3AED' : '#FA2D1A',
                             }}>
                               {s.games_played > 0 ? Math.round(s.games_won / s.games_played * 100) : 0}%
                             </span>

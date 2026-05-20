@@ -2,7 +2,7 @@ import { useLang } from '../lib/i18n'
 
 const display = { fontFamily: "'Oswald', sans-serif", fontWeight: 900 }
 
-export default function GrowthChart({ history = [], height = 180, accent = '#2E4C8C' }) {
+export default function GrowthChart({ history = [], height = 180, accent = '#7C3AED' }) {
   const { t } = useLang()
 
   if (!history || history.length < 2) {
