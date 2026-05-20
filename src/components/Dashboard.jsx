@@ -1,18 +1,16 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { createDuel } from '../lib/supabase'
-import { IconRobot, IconSwords, IconLightning, IconShield, IconKnight, IconSprout, IconTarget, IconFlame, IconDiamond, IconCoin, IconChessKing, IconStar, IconArrowRight } from './Icons'
-import SkinSelector from './SkinSelector'
-import PieceShop from './PieceShop'
-import DailyQuests from './DailyQuests'
-import Competitions from './Competitions'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { createDuel, getPlayerGames } from '../lib/supabase'
+import {
+  IconChessRook, IconChessKing, IconTrophy, IconScroll, IconBook, IconRobot,
+  IconStar, IconArrowRight, IconCrown, IconSkull, IconHandshake,
+  IconSwords, IconShield, IconKnight, IconSprout, IconTarget, IconLightning, IconFlame, IconDiamond,
+  IconCoin,
+} from './Icons'
+import Avatar from './Avatar'
 import { useLang } from '../lib/i18n'
 
-const CLASS_STYLE = {
-  attacker:  { icon: <IconSwords size={28} />, nameKey: 'class_attacker', accent: '#FA2D1A', bg: 'var(--tint-red)', border: 'var(--tint-red-border)' },
-  defender:  { icon: <IconShield size={28} />, nameKey: 'class_defender', accent: '#7C3AED', bg: 'var(--tint-blue)', border: 'var(--tint-blue-border)' },
-  tactician: { icon: <IconKnight size={28} />, nameKey: 'class_tactician', accent: '#1A7A4A', bg: 'var(--tint-green)', border: 'var(--tint-green-border)' },
-}
+const display = { fontFamily: "'Oswald', sans-serif", fontWeight: 700, letterSpacing: '-0.01em' }
 
 const AI_LEVEL_DEFS = [
   { level: 1,  key: 'level_novice',   icon: <IconSprout size={18} /> },
@@ -22,267 +20,366 @@ const AI_LEVEL_DEFS = [
   { level: 20, key: 'level_gm',       icon: <IconDiamond size={18} /> },
 ]
 
-const display = { fontFamily: "'Oswald', sans-serif", fontWeight: 900, lineHeight: 0.92 }
-
 export default function Dashboard({ profile, onStartGame, onSpendCoins }) {
-  const { t }                             = useLang()
+  const { t } = useLang()
+  const navigate = useNavigate()
+  const [games, setGames] = useState([])
+  const [showNewGame, setShowNewGame] = useState(false)
   const [selectedLevel, setSelectedLevel] = useState(10)
-  const [creatingDuel, setCreatingDuel]   = useState(false)
-  const [duelLink, setDuelLink]           = useState(null)
 
-  const clsBase = CLASS_STYLE[profile?.class] || CLASS_STYLE.tactician
-  const cls = { ...clsBase, name: t(clsBase.nameKey) }
-  const winrate = profile?.games_played > 0
-    ? Math.round(profile.games_won / profile.games_played * 100) : 0
-  const xpPct = Math.min(100, ((profile?.xp || 0) % 500) / 5)
+  useEffect(() => {
+    if (!profile?.id) return
+    getPlayerGames(profile.id, 5).then(setGames).catch(() => setGames([]))
+  }, [profile?.id])
 
-  async function handleCreateDuel() {
-    if (!profile) return
-    setCreatingDuel(true)
-    try {
-      const duel = await createDuel(profile.id)
-      const link = `${window.location.origin}/duel/${duel.invite_code}`
-      setDuelLink(link)
-      await navigator.clipboard.writeText(link)
-    } catch (e) { console.error(e) }
-    finally { setCreatingDuel(false) }
+  if (showNewGame) {
+    return (
+      <NewGameFlow
+        onStart={(opts) => { setShowNewGame(false); onStartGame(opts) }}
+        onBack={() => setShowNewGame(false)}
+        selectedLevel={selectedLevel}
+        setSelectedLevel={setSelectedLevel}
+        t={t}
+      />
+    )
   }
 
   return (
-    <div style={{ padding: '32px 28px', maxWidth: 940, margin: '0 auto' }}>
-
-      {/* ── Hero ── */}
-      <div style={{
-        background: '#7C3AED', borderRadius: 24, padding: '32px 36px',
-        marginBottom: 28, position: 'relative', overflow: 'hidden',
-        display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 20,
-        minHeight: 180,
-      }}>
-        {/* Decorative chess king — replaces ♔ unicode */}
-        <div style={{
-          position: 'absolute', right: -20, top: -10,
-          color: 'rgba(255,255,255,0.06)',
-          userSelect: 'none', pointerEvents: 'none', lineHeight: 1,
-        }}>
-          <IconChessKing size={200} color="currentColor" />
-        </div>
-
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            background: '#FA2D1A', color: 'var(--ink-light)',
-            padding: '5px 14px', borderRadius: 999,
-            fontSize: 11, fontWeight: 700, letterSpacing: 2, marginBottom: 12,
-          }}>
-            {cls.icon} {cls.name}
-          </div>
-
-          <div style={{ ...display, fontSize: 56, color: 'var(--ink-light)', marginBottom: 8 }}>
-            {profile?.username || t('legend')}
-          </div>
-
-          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-            {[
-              { val: `${t('level_short')} ${profile?.level || 1}`, label: null, icon: null },
-              { val: `${profile?.rating || 1000}`, label: t('rating_label'), icon: null },
-              { val: `${profile?.coins || 0}`, label: t('coins_label'), icon: <IconCoin size={14} color="currentColor" /> },
-            ].map(({ val, label, icon }) => (
-              <span key={val} style={{ fontSize: 14, color: 'rgba(255,243,225,0.7)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                {label && <span style={{ opacity: 0.5 }}>{label} </span>}
-                <span style={{ fontWeight: 600, color: 'var(--ink-light)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>{val}{icon}</span>
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end', position: 'relative', zIndex: 1 }}>
-          <div style={{ background: 'rgba(255,255,255,0.12)', borderRadius: 14, padding: '12px 20px', textAlign: 'right' }}>
-            <div style={{ ...display, fontSize: 36, color: 'var(--ink-light)', lineHeight: 1 }}>{profile?.games_played || 0}</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,243,225,0.6)', marginTop: 2 }}>{t('games_label')}</div>
-          </div>
-          <div style={{ background: '#FA2D1A', borderRadius: 14, padding: '12px 20px', textAlign: 'right' }}>
-            <div style={{ ...display, fontSize: 36, color: 'var(--ink-light)', lineHeight: 1 }}>{winrate}%</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,243,225,0.7)', marginTop: 2 }}>{t('wins_label')}</div>
-          </div>
-        </div>
+    <div style={{ maxWidth: 720, margin: '0 auto', padding: '12px 16px 32px', width: '100%' }}>
+      {/* ── 2 big hero tiles ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
+        <HeroTile
+          title={t('home_tile_new_game')}
+          onClick={() => setShowNewGame(true)}
+          accent="var(--primary)"
+          decoration={
+            <ChessBoardArt />
+          }
+        />
+        <HeroTile
+          title={t('home_tile_tournaments')}
+          onClick={() => navigate('/tournament')}
+          accent="var(--accent-amber)"
+          decoration={
+            <TrophyArt />
+          }
+        />
       </div>
 
-      {/* Pro upsell — shown only if user is not pro yet */}
+      {/* ── Row of 4 quick tiles ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 14 }}>
+        <QuickTile to="/profile" label={t('quick_history')} icon={<HistoryIcon />} />
+        <QuickTile to="/lessons" label={t('quick_learn')}   icon={<IconBook size={22} color="currentColor" />} />
+        <QuickTile to="/coach"   label={t('quick_chat')}    icon={<IconRobot size={22} color="currentColor" />} />
+        <QuickTile to="/leaderboard" label={t('quick_rank')} icon={<IconCrown size={22} color="currentColor" />} badge={profile?.level} />
+      </div>
+
+      {/* ── Premium banner ── */}
       {profile && !profile.is_pro && (
         <Link to="/pro" style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          gap: 16, padding: '14px 20px',
-          background: 'linear-gradient(135deg, var(--tint-amber) 0%, var(--tint-red) 100%)',
-          border: '1.5px solid var(--tint-amber-border)', borderRadius: 14,
-          marginBottom: 16, textDecoration: 'none', flexWrap: 'wrap',
+          display: 'block', textDecoration: 'none',
+          background: 'linear-gradient(135deg, #A855F7 0%, #6D28D9 100%)',
+          borderRadius: 16, padding: '14px 16px', marginBottom: 14,
+          position: 'relative', overflow: 'hidden',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ color: '#F5C218', display: 'flex' }}><IconStar size={22} filled color="currentColor" /></span>
-            <div>
-              <div style={{ ...display, fontSize: 18, color: 'var(--text)', lineHeight: 1, marginBottom: 4 }}>{t('pro_title')}</div>
-              <div style={{ fontSize: 12, color: 'var(--muted)' }}>{t('pro_subtitle')}</div>
+          <div style={{ position: 'absolute', right: -8, bottom: -8, color: 'rgba(255,255,255,0.18)' }}>
+            <IconChessKing size={90} color="currentColor" />
+          </div>
+          <div style={{ position: 'relative', maxWidth: '70%' }}>
+            <div style={{ ...display, fontSize: 14, color: '#FFFFFF', marginBottom: 4 }}>
+              {t('home_pro_title')}
+            </div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.78)', lineHeight: 1.35 }}>
+              {t('home_pro_desc')}
             </div>
           </div>
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            padding: '7px 14px', borderRadius: 10,
-            background: 'var(--text)', color: 'var(--bg)',
-            fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 12, letterSpacing: 0.5,
-          }}>
-            {t('pro_cta')} <IconArrowRight size={12} color="currentColor" />
-          </span>
         </Link>
       )}
 
-      {/* XP bar */}
-      <div style={{ background: 'var(--bg-card)', border: '1.5px solid var(--border)', borderRadius: 14, padding: '14px 20px', marginBottom: 28 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--muted)', marginBottom: 8 }}>
-          <span style={{ fontWeight: 600 }}>{t('xp_label')}</span>
-          <span>{profile?.xp || 0} / {(profile?.level || 1) * 500} xp</span>
-        </div>
-        <div style={{ height: 8, background: 'var(--border-soft)', borderRadius: 99, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${xpPct}%`, background: '#7C3AED', borderRadius: 99, transition: 'width 0.6s' }} />
-        </div>
+      {/* ── History section ── */}
+      <SectionHeader title={t('home_history_title')} to="/profile" t={t} />
+      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, overflow: 'hidden', marginBottom: 14 }}>
+        {games.length === 0 ? (
+          <div style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--muted-soft)', fontSize: 13 }}>
+            {t('no_games')}
+          </div>
+        ) : games.slice(0, 4).map((g, i) => (
+          <GameRow key={g.id || i} game={g} isLast={i === games.slice(0, 4).length - 1} t={t} />
+        ))}
       </div>
 
-      {/* Section label */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-        <div style={{ ...display, fontSize: 40, color: 'var(--text)' }}>{t('choose_mode')}</div>
-        <div style={{ flex: 1, height: 2, background: 'var(--border)', borderRadius: 1 }} />
+      {/* ── Tournaments link row ── */}
+      <Link to="/tournament" style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '14px 18px', borderRadius: 16,
+        background: 'var(--bg-card)', border: '1px solid var(--border)',
+        textDecoration: 'none', color: 'var(--text)',
+      }}>
+        <span style={{ ...display, fontSize: 15 }}>{t('home_my_tournaments')}</span>
+        <IconArrowRight size={18} color="var(--muted)" />
+      </Link>
+    </div>
+  )
+}
+
+// ── Hero tile with big card + decoration ───────────────────────────────────
+function HeroTile({ title, onClick, decoration, accent }) {
+  return (
+    <button onClick={onClick} style={{
+      position: 'relative', overflow: 'hidden',
+      aspectRatio: '1 / 1.05',
+      background: 'var(--bg-card)', border: '1px solid var(--border)',
+      borderRadius: 16, padding: '14px 14px 16px',
+      cursor: 'pointer', textAlign: 'left',
+      display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+      color: 'var(--text)', fontFamily: 'inherit',
+      transition: 'transform 0.15s ease, border-color 0.15s ease',
+    }}
+    onMouseEnter={e => { e.currentTarget.style.borderColor = accent }}
+    onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)' }}
+    >
+      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+        {decoration}
       </div>
+      <div style={{ position: 'relative', ...display, fontSize: 18, fontWeight: 800 }}>{title}</div>
+    </button>
+  )
+}
 
-      {/* Mode cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, marginBottom: 28 }}>
+function QuickTile({ to, label, icon, badge }) {
+  return (
+    <Link to={to} style={{
+      aspectRatio: '1 / 1',
+      background: 'var(--bg-card)', border: '1px solid var(--border)',
+      borderRadius: 16, padding: '10px 8px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6,
+      textDecoration: 'none', color: 'var(--text)',
+      position: 'relative',
+    }}>
+      {badge !== undefined && (
+        <span style={{
+          position: 'absolute', top: 8, right: 8,
+          minWidth: 16, height: 16, padding: '0 5px', borderRadius: 8,
+          background: 'var(--primary)', color: '#FFFFFF',
+          fontSize: 9, fontWeight: 800,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>{badge}</span>
+      )}
+      <span style={{ color: 'var(--primary)' }}>{icon}</span>
+      <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text)', textAlign: 'center', lineHeight: 1.1 }}>{label}</span>
+    </Link>
+  )
+}
 
-        {/* vs AI */}
-        <div className="card-hover" style={{
-          background: 'var(--bg-card)',
-          border: '1.5px solid var(--border)',
-          borderTop: '4px solid var(--accent-blue)',
-          borderRadius: 20, padding: 24, display: 'flex', flexDirection: 'column',
-          position: 'relative', overflow: 'hidden',
+function SectionHeader({ title, to, t }) {
+  return (
+    <Link to={to} style={{
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      padding: '14px 18px', borderRadius: '16px 16px 0 0',
+      background: 'var(--bg-card)', border: '1px solid var(--border)',
+      borderBottom: 'none',
+      textDecoration: 'none', color: 'var(--text)', marginBottom: 0,
+      marginTop: 2,
+    }}>
+      <span style={{ ...display, fontSize: 15 }}>{title}</span>
+      <IconArrowRight size={18} color="var(--muted)" />
+    </Link>
+  )
+}
+
+function GameRow({ game, isLast, t }) {
+  const RESULT_META = {
+    win:  { label: t('result_win_label'),  color: 'var(--accent-green)', sign: '+' },
+    loss: { label: t('result_loss_label'), color: 'var(--accent-red)',   sign: '' },
+    draw: { label: t('result_draw_label'), color: 'var(--muted)',        sign: '' },
+  }
+  const res = RESULT_META[game.result] || RESULT_META.draw
+  const opponent = game.opponent || (game.mode === 'vs_ai' ? `ai ${game.skill_level || ''}` : '@player')
+  const date = game.created_at ? new Date(game.created_at).toLocaleDateString('ru') : ''
+
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 12,
+      padding: '12px 16px',
+      borderTop: '1px solid var(--border-soft)',
+      borderRadius: isLast ? '0 0 16px 16px' : 0,
+    }}>
+      <Avatar name={opponent} size={36} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {opponent}
+        </div>
+        <div style={{ fontSize: 11, color: 'var(--muted-soft)', marginTop: 1 }}>{date}</div>
+      </div>
+      <div style={{ textAlign: 'right' }}>
+        <span style={{
+          display: 'inline-block', padding: '2px 8px', borderRadius: 6,
+          background: 'transparent', border: `1px solid ${res.color}40`,
+          fontSize: 11, fontWeight: 700, color: res.color,
         }}>
-          <div style={{ position: 'absolute', right: -18, top: -10, color: 'var(--accent-blue)', opacity: 0.08, pointerEvents: 'none' }}>
-            <IconRobot size={120} color="currentColor" />
+          {res.label}
+        </span>
+        {game.game_rating !== undefined && game.game_rating !== null && (
+          <div style={{ fontSize: 11, color: res.color, fontWeight: 700, marginTop: 3, fontFamily: "'Inter', sans-serif" }}>
+            {res.sign}{game.coins_delta || 0}
           </div>
-          <div style={{ position: 'relative' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-              <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: 'var(--accent-blue)', padding: '3px 8px', background: 'var(--tint-blue)', borderRadius: 6 }}>solo</span>
-            </div>
-            <div style={{ ...display, fontSize: 32, color: 'var(--text)', marginBottom: 4 }}>vs ai</div>
-            <p style={{ fontSize: 13, color: 'var(--muted)', margin: '0 0 18px' }}>{t('vs_ai_desc')}</p>
-          </div>
+        )}
+      </div>
+    </div>
+  )
+}
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 20, flex: 1, position: 'relative' }}>
+// ── Decorative chess board image ──────────────────────────────────────────
+function ChessBoardArt() {
+  const cells = []
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 4; c++) {
+      const dark = (r + c) % 2 === 1
+      cells.push(<div key={`${r}-${c}`} style={{
+        width: 26, height: 26,
+        background: dark ? 'var(--board-dark)' : 'var(--board-light)',
+      }} />)
+    }
+  }
+  return (
+    <div style={{
+      transform: 'rotate(-8deg) translateY(-6px)',
+      display: 'grid', gridTemplateColumns: 'repeat(4, 26px)',
+      borderRadius: 6, overflow: 'hidden',
+      boxShadow: '0 8px 24px rgba(168,85,247,0.3)',
+    }}>
+      {cells}
+    </div>
+  )
+}
+
+function TrophyArt() {
+  return (
+    <div style={{
+      transform: 'translateY(-4px)', color: 'var(--accent-amber)',
+      filter: 'drop-shadow(0 8px 16px rgba(245,165,36,0.35))',
+    }}>
+      <IconTrophy size={88} color="currentColor" />
+    </div>
+  )
+}
+
+function HistoryIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <polyline points="12 7 12 12 15 14" />
+    </svg>
+  )
+}
+
+// ── New Game flow (inline) ─────────────────────────────────────────────────
+function NewGameFlow({ onStart, onBack, selectedLevel, setSelectedLevel, t }) {
+  const [mode, setMode] = useState(null) // 'vs_ai' | 'duel' | null
+
+  return (
+    <div style={{ maxWidth: 480, margin: '0 auto', padding: '16px', width: '100%' }}>
+      <button onClick={onBack} style={{
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        background: 'transparent', border: 'none', cursor: 'pointer',
+        color: 'var(--text)', fontFamily: 'inherit', fontSize: 16, fontWeight: 700,
+        padding: '8px 0', marginBottom: 12,
+      }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+        {t('newgame_title')}
+      </button>
+
+      {/* Big rook illustration */}
+      <div style={{
+        display: 'flex', justifyContent: 'center', padding: '36px 0 20px',
+        color: 'var(--primary)',
+        filter: 'drop-shadow(0 16px 40px rgba(168,85,247,0.35))',
+      }}>
+        <IconChessRook size={140} color="currentColor" />
+      </div>
+
+      <p style={{ textAlign: 'center', fontSize: 14, color: 'var(--muted)', margin: '0 0 20px' }}>
+        {t('newgame_choose')}
+      </p>
+
+      {/* Mode list */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
+        <ModeRow
+          icon={<IconRobot size={20} color="currentColor" />}
+          title={t('newgame_vs_ai')}
+          active={mode === 'vs_ai'}
+          onClick={() => setMode('vs_ai')}
+        />
+        <ModeRow
+          icon={<IconSwords size={20} color="currentColor" />}
+          title={t('newgame_duel')}
+          active={mode === 'duel'}
+          onClick={() => setMode('duel')}
+        />
+      </div>
+
+      {/* AI level picker */}
+      {mode === 'vs_ai' && (
+        <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: 'var(--muted-soft)', marginBottom: 10, textTransform: 'uppercase' }}>
+            {t('newgame_difficulty')}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 6 }}>
             {AI_LEVEL_DEFS.map(({ level, key, icon }) => {
               const active = selectedLevel === level
               return (
                 <button key={level} onClick={() => setSelectedLevel(level)} style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '9px 14px', borderRadius: 12, fontSize: 13, cursor: 'pointer',
-                  border: active ? '1.5px solid #7C3AED' : '1.5px solid var(--border)',
-                  background: active ? 'var(--tint-blue)' : 'transparent',
-                  color: active ? 'var(--accent-blue)' : 'var(--muted)', fontWeight: active ? 700 : 400,
-                  transition: 'all 0.12s',
+                  padding: '12px 4px', borderRadius: 10, cursor: 'pointer',
+                  background: active ? 'var(--primary)' : 'transparent',
+                  border: active ? '1px solid var(--primary)' : '1px solid var(--border)',
+                  color: active ? '#FFFFFF' : 'var(--muted)',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                  fontFamily: 'inherit',
                 }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ color: active ? 'var(--accent-blue)' : 'var(--muted-soft)' }}>{icon}</span>
-                    {t(key)}
-                  </span>
-                  <span style={{ fontSize: 11, opacity: 0.45 }}>{t('level_short')} {level}</span>
+                  {icon}
+                  <span style={{ fontSize: 10, fontWeight: 700, fontFamily: 'monospace' }}>{level}</span>
                 </button>
               )
             })}
           </div>
-
-          <button
-            className="btn-cta"
-            onClick={() => onStartGame({ mode: 'vs_ai', skillLevel: selectedLevel })}
-            style={{ background: 'var(--accent-blue)', color: 'var(--ink-light)', width: '100%', position: 'relative' }}
-          >
-            {t('play')} <IconArrowRight size={16} color="currentColor" />
-          </button>
         </div>
+      )}
 
-        {/* Duel */}
-        <div className="card-hover" style={{
-          background: 'var(--bg-card)',
-          border: '1.5px solid var(--border)',
-          borderTop: '4px solid var(--accent-red)',
-          borderRadius: 20, padding: 24, display: 'flex', flexDirection: 'column',
-          position: 'relative', overflow: 'hidden',
-        }}>
-          <div style={{ position: 'absolute', right: -18, top: -10, color: 'var(--accent-red)', opacity: 0.08, pointerEvents: 'none' }}>
-            <IconSwords size={120} color="currentColor" />
-          </div>
-          <div style={{ position: 'relative' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-              <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: 'var(--accent-red)', padding: '3px 8px', background: 'var(--tint-red)', borderRadius: 6 }}>pvp</span>
-            </div>
-            <div style={{ ...display, fontSize: 32, color: 'var(--text)', marginBottom: 4 }}>{t('duel_title')}</div>
-            <p style={{ fontSize: 13, color: 'var(--muted)', margin: '0 0 18px' }}>{t('duel_desc')}</p>
-          </div>
-
-          <div style={{ flex: 1 }} />
-
-          <button
-            className="btn-cta"
-            onClick={() => onStartGame({ mode: 'duel' })}
-            style={{ background: 'var(--text)', color: 'var(--bg)', width: '100%', marginBottom: 10, position: 'relative' }}
-          >
-            {t('duel_local')}
-          </button>
-
-          {duelLink ? (
-            <div>
-              <div style={{ background: 'var(--tint-blue)', border: '1.5px solid var(--tint-blue-border)', borderRadius: 12, padding: 12, marginBottom: 8 }}>
-                <p style={{ margin: '0 0 4px', fontSize: 11, color: 'var(--accent-blue)', fontWeight: 700 }}>{t('link_copied')}</p>
-                <p style={{ margin: 0, fontSize: 11, color: 'var(--muted)', wordBreak: 'break-all', fontFamily: 'monospace' }}>{duelLink}</p>
-              </div>
-              <button onClick={() => onStartGame({ mode: 'duel', inviteCode: duelLink.split('/').pop() })} style={{
-                width: '100%', padding: '11px', borderRadius: 12, border: 'none', cursor: 'pointer',
-                background: '#7C3AED', color: 'var(--ink-light)', fontWeight: 700, fontSize: 13,
-                fontFamily: "'Oswald', sans-serif", letterSpacing: 1,
-              }}>
-                {t('open_board')}
-              </button>
-            </div>
-          ) : (
-            <button onClick={handleCreateDuel} disabled={creatingDuel} style={{
-              padding: '11px', borderRadius: 12, cursor: 'pointer',
-              border: '1.5px solid var(--tint-blue-border)',
-              background: creatingDuel ? '#F5F5F5' : 'var(--tint-blue)',
-              color: creatingDuel ? '#aaa' : 'var(--accent-blue)',
-              fontWeight: 700, fontSize: 13,
-              fontFamily: "'Oswald', sans-serif", letterSpacing: 1,
-            }}>
-              {creatingDuel ? t('creating') : t('duel_online')}
-            </button>
-          )}
-        </div>
-
-      </div>
-
-      {/* Daily quests */}
-      <DailyQuests
-        onEarnReward={(reward) => {
-          if (onSpendCoins && reward.coins > 0) onSpendCoins(-reward.coins)
+      {/* CTA */}
+      <button
+        disabled={!mode}
+        onClick={() => mode === 'vs_ai' ? onStart({ mode: 'vs_ai', skillLevel: selectedLevel }) : onStart({ mode: 'duel' })}
+        style={{
+          width: '100%', padding: '15px',
+          background: mode ? 'var(--primary)' : 'var(--bg-card)',
+          color: mode ? '#FFFFFF' : 'var(--muted-soft)',
+          border: mode ? 'none' : '1px solid var(--border)',
+          borderRadius: 14, cursor: mode ? 'pointer' : 'not-allowed',
+          fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 16, letterSpacing: 0.5,
+          transition: 'all 0.15s',
         }}
-      />
-
-      {/* Competitions board */}
-      <Competitions />
-
-      {/* Board skin selector */}
-      <div style={{ marginBottom: 28 }}>
-        <SkinSelector playerLevel={profile?.level || 1} />
-      </div>
-
-      {/* Piece shop */}
-      <div style={{ marginBottom: 28 }}>
-        <PieceShop profile={profile} onSpendCoins={onSpendCoins} />
-      </div>
-
+      >
+        {t('newgame_start')}
+      </button>
     </div>
+  )
+}
+
+function ModeRow({ icon, title, active, onClick }) {
+  return (
+    <button onClick={onClick} style={{
+      display: 'flex', alignItems: 'center', gap: 14,
+      padding: '14px 18px', borderRadius: 14,
+      background: active ? 'var(--primary-tint)' : 'var(--bg-card)',
+      border: active ? '1px solid var(--primary)' : '1px solid var(--border)',
+      cursor: 'pointer', fontFamily: 'inherit',
+      color: 'var(--text)', textAlign: 'left',
+    }}>
+      <span style={{ color: 'var(--primary)' }}>{icon}</span>
+      <span style={{ flex: 1, fontSize: 15, fontWeight: 600 }}>{title}</span>
+      <IconArrowRight size={18} color="var(--muted)" />
+    </button>
   )
 }

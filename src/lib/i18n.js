@@ -103,6 +103,27 @@ const T = {
     pro_success_title: 'добро пожаловать в pro',
     pro_success_desc: 'оплата прошла. твой статус обновится через пару секунд.',
     nav_pro: 'pro',
+    drawer_play: 'играть',
+    drawer_community: 'сообщество',
+    drawer_learn: 'учиться',
+    home_tile_new_game: 'новая игра',
+    home_tile_tournaments: 'турниры',
+    quick_history: 'история',
+    quick_learn: 'обучение',
+    quick_chat: 'чат',
+    quick_rank: 'рейтинг',
+    home_pro_title: 'новый уровень — premium',
+    home_pro_desc: 'анализ партий, безлимит ai-coach, эксклюзивные фигуры.',
+    home_history_title: 'прошедшие игры',
+    home_my_tournaments: 'сыгранные турниры',
+    game_chat: 'чат с соперником',
+    more: 'прочее',
+    newgame_title: 'новая игра',
+    newgame_choose: 'выберите режим и тип игры',
+    newgame_vs_ai: 'игра с ai',
+    newgame_duel: 'дуэль (с другом)',
+    newgame_difficulty: 'сложность',
+    newgame_start: 'начать игру',
     not_in_top: 'тебя нет в топ-20. твой рейтинг:',
     col_player: 'игрок',
     more_cities: '▾ ещё',
@@ -267,6 +288,7 @@ const T = {
     skin_selected: 'выбран',
     skin_select_btn: 'выбрать',
     // Skin names (board)
+    skin_purple_name: 'пурпур',
     skin_classic_name: 'классика',
     skin_night_name: 'ночь',
     skin_jade_name: 'нефрит',
@@ -285,6 +307,7 @@ const T = {
     piece_blood_desc: 'алая сталь',
     piece_shadow_desc: 'растворяются во тьме',
     // Board skin descriptions
+    skin_purple_desc: 'фиолетовая премиум доска',
     skin_classic_desc: 'традиционная деревянная доска',
     skin_night_desc: 'тёмная сланцевая доска',
     skin_jade_desc: 'нефритово-зелёная',
@@ -697,6 +720,27 @@ const T = {
     pro_success_title: 'pro-ға қош келдің',
     pro_success_desc: 'төлем өтті. мәртебең бірнеше секундта жаңарады.',
     nav_pro: 'pro',
+    drawer_play: 'ойнау',
+    drawer_community: 'қауымдастық',
+    drawer_learn: 'үйрену',
+    home_tile_new_game: 'жаңа ойын',
+    home_tile_tournaments: 'турнирлер',
+    quick_history: 'тарих',
+    quick_learn: 'оқу',
+    quick_chat: 'чат',
+    quick_rank: 'рейтинг',
+    home_pro_title: 'жаңа деңгей — premium',
+    home_pro_desc: 'партиялар талдауы, шексіз ai-coach, эксклюзивті фигуралар.',
+    home_history_title: 'өткен ойындар',
+    home_my_tournaments: 'қатысқан турнирлер',
+    game_chat: 'қарсыласпен чат',
+    more: 'басқа',
+    newgame_title: 'жаңа ойын',
+    newgame_choose: 'режим мен ойын түрін таңда',
+    newgame_vs_ai: 'ai-мен ойын',
+    newgame_duel: 'дуэль (досыңмен)',
+    newgame_difficulty: 'қиындық',
+    newgame_start: 'ойынды бастау',
     not_in_top: 'топ-20-да жоқсың. рейтингің:',
     col_player: 'ойыншы',
     more_cities: '▾ басқа',
@@ -861,6 +905,7 @@ const T = {
     skin_selected: 'таңдалды',
     skin_select_btn: 'таңдау',
     // Skin names (board)
+    skin_purple_name: 'пурпур',
     skin_classic_name: 'классика',
     skin_night_name: 'түн',
     skin_jade_name: 'нефрит',
@@ -1231,7 +1276,7 @@ export function useTheme() {
 }
 
 function getThemeFromStorage() {
-  return localStorage.getItem('chessy_theme') || 'light'
+  return localStorage.getItem('chessy_theme') || 'dark'
 }
 
 export function ThemeProvider({ children }) {

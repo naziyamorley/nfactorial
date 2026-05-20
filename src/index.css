@@ -39,34 +39,41 @@
 }
 
 html[data-theme="dark"] {
-  /* Dark mode — deep near-black with purple tint, premium feel */
-  --bg:           #0B0613;
-  --bg-card:      #15101F;
-  --bg-card-soft: #100B19;
-  --bg-row-alt:   #130E1B;
-  --bg-tag:       #1F1828;
-  --bg-track:     #1F1828;
+  /* Dark mode — purple-black premium app feel, matches reference design */
+  --bg:           #100614;        /* very dark purple-black page */
+  --bg-card:      #000000;        /* PURE black cards (key signature) */
+  --bg-card-soft: #0A0410;        /* subtle elevation variant */
+  --bg-row-alt:   #0E0612;
+  --bg-tag:       #1A0E22;
+  --bg-track:     #1A0E22;
   --text:         #F5F3F7;
-  --muted:        #A099AA;
-  --muted-soft:   #6B6470;
-  --border:       #251D32;
-  --border-soft:  #1B1525;
-  --shadow:       rgba(0,0,0,0.5);
+  --muted:        #9089A0;
+  --muted-soft:   #5E5466;
+  --border:       #1F1428;
+  --border-soft:  #150D1C;
+  --shadow:       rgba(0,0,0,0.6);
   --ink-light:    #FFFFFF;
-  --ink-dark:     #0B0613;
+  --ink-dark:     #100614;
   --primary:      #A855F7;
   --primary-soft: #C084FC;
-  --primary-tint: #2A1A40;
+  --primary-tint: #2A1545;
   --accent-red:   #F87171;
   --accent-blue:  #60A5FA;
   --accent-green: #4ADE80;
-  --accent-amber: #FBBF24;
+  --accent-amber: #F5A524;       /* gold for coins */
   --accent-purple:#A855F7;
-  --tint-red:     #2A1010;  --tint-red-border:   #4B1A1A;
+  --tint-red:     #2A0F10;  --tint-red-border:   #4B1A1A;
   --tint-blue:    #0F1A33;  --tint-blue-border:  #1F3050;
   --tint-green:   #0F2818;  --tint-green-border: #1B4530;
   --tint-amber:   #2A1F0A;  --tint-amber-border: #4A3818;
-  --tint-purple:  #2A1A40;  --tint-purple-border:#4A2F70;
+  --tint-purple:  #2A1545;  --tint-purple-border:#4A2470;
+  /* Chess board — purple theme matching reference */
+  --board-light:  #E8DFF5;
+  --board-dark:   #5B3A85;
+}
+:root {
+  --board-light: #F0D9B5;
+  --board-dark:  #B58863;
 }
 
 @layer base {

@@ -1,5 +1,11 @@
 export const SKINS = [
   {
+    id: 'purple',
+    level: 1,
+    light: '#E8DFF5',
+    dark: '#5B3A85',
+  },
+  {
     id: 'classic',
     level: 1,
     light: '#f0d9b5',
@@ -32,7 +38,7 @@ export const SKINS = [
 ]
 
 export function getActiveSkin() {
-  const id = localStorage.getItem('chessSkin') || 'classic'
+  const id = localStorage.getItem('chessSkin') || 'purple'
   return SKINS.find(s => s.id === id) || SKINS[0]
 }
 

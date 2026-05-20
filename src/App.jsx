@@ -6,7 +6,7 @@ import { useLang } from './lib/i18n'
 import { IconChessKing, IconChessRook } from './components/Icons'
 import Auth from './components/Auth'
 import ClassSelector from './components/ClassSelector'
-import Navbar from './components/Navbar'
+import TopBar from './components/TopBar'
 import Dashboard from './components/Dashboard'
 import ChessGame from './components/ChessGame'
 import AICoach from './components/AICoach'
@@ -169,10 +169,10 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell">
-      <Navbar profile={effectiveProfile} />
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', minHeight: '100dvh', background: 'var(--bg)' }}>
+      <TopBar profile={effectiveProfile} />
 
-      <div className="app-content">
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         {isDemo && (
           <div style={{ background: '#FA2D1A', textAlign: 'center', padding: '8px 16px', flexShrink: 0 }}>
             <p style={{ color: 'var(--ink-light)', fontSize: 12, margin: 0, fontWeight: 600 }}>

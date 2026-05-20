@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Chessboard } from 'react-chessboard'
 import { Chess } from 'chess.js'
 import { IconFlag, IconHandshake, IconClipboard, IconCrown, IconSkull, IconRobot, IconLightning, IconKnight, IconSwords } from './Icons'
+import Avatar from './Avatar'
 import { getActiveSkin } from '../lib/skins'
 import { getActivePieceSkin } from '../lib/pieceSkins'
 import { createCustomPieces } from '../lib/pieceRenderers'
@@ -170,19 +171,15 @@ export default function ChessGame({ profile, mode = 'vs_ai', skillLevel = 10, in
     return applyMove(sourceSquare, targetSquare)
   }
 
-  // Board size — recomputes on window resize.
-  // 68 = nav width, 200 = right column (move log), 64 = horizontal padding
+  // Board size — recomputes on window resize. Reference layout: board fills width.
   const [viewport, setViewport] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }))
   useEffect(() => {
     function onResize() { setViewport({ w: window.innerWidth, h: window.innerHeight }) }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [])
-  const hasSidebar = viewport.w >= 900
-  const boardPx = Math.max(
-    280,
-    Math.min(540, viewport.w - 68 - (hasSidebar ? 200 : 0) - 64, viewport.h - 160)
-  )
+  // Board adapts to viewport width; max 520 on desktop, full-width minus padding on mobile.
+  const boardPx = Math.max(260, Math.min(520, viewport.w - 32))
 
   const resultConfig = {
     win:  { icon: <IconCrown size={28} />,     text: t('win_text'),  color: 'var(--accent-blue)', bg: 'var(--tint-blue)', border: 'var(--tint-blue-border)' },
@@ -194,47 +191,29 @@ export default function ChessGame({ profile, mode = 'vs_ai', skillLevel = 10, in
   for (let i = 0; i < moveLog.length; i += 2)
     movePairs.push({ num: i / 2 + 1, w: moveLog[i], b: moveLog[i + 1] })
 
+  const oppName = mode === 'vs_ai' ? `ai · ${t('level_short')} ${skillLevel}` : (isOnlineDuel ? '@opponent' : 'player 2')
+  const oppRating = mode === 'vs_ai' ? 1000 + skillLevel * 60 : 1432
+
   return (
-    <div style={{ display: 'flex', gap: 14, padding: '24px 28px', alignItems: 'flex-start', justifyContent: 'center' }}>
+    <div style={{ maxWidth: 560, margin: '0 auto', padding: '12px 16px 24px', width: '100%' }}>
 
-      {/* Board column */}
-      <div style={{ flexShrink: 0 }}>
-        {/* Status */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, width: boardPx }}>
-          <span style={{ fontSize: 12, color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: 5 }}>
-            {mode === 'vs_ai'
-              ? <><IconRobot size={14} color="var(--muted)" /> {t('vs_ai_label')} · {t('level_label')} {skillLevel}</>
-              : isOnlineDuel
-              ? <><IconSwords size={14} color="var(--muted)" /> {t('online_duel')} · {myColor === 'w' ? t('white_pieces') : t('black_pieces')}</>
-              : <><IconSwords size={14} color="var(--muted)" /> {t('local_duel_label')}</>}
-          </span>
-          <span style={{
-            display: 'flex', alignItems: 'center', gap: 5,
-            fontSize: 11, padding: '5px 14px', borderRadius: 999, fontWeight: 700,
-            fontFamily: "'Oswald', sans-serif", letterSpacing: 0.5,
-            background: waitingFor ? 'var(--bg-tag)' : thinking ? 'var(--tint-blue)' : finished ? 'var(--bg-card-soft)' : myTurn ? 'var(--tint-red)' : 'var(--tint-blue)',
-            color: waitingFor ? 'var(--muted-soft)' : thinking ? '#7C3AED' : finished ? 'var(--muted-soft)' : myTurn ? '#FA2D1A' : '#7C3AED',
-            border: `1.5px solid ${waitingFor ? 'var(--border)' : thinking ? 'var(--tint-blue-border)' : finished ? 'var(--border)' : myTurn ? 'var(--tint-red-border)' : 'var(--tint-blue-border)'}`,
-          }}>
-            {waitingFor === 'opponent'
-              ? t('waiting_opponent')
-              : thinking
-              ? <><IconRobot size={13} color="var(--accent-blue)" /> {t('ai_thinking')}</>
-              : finished
-              ? <><IconFlag size={13} color="var(--muted-soft)" /> {t('game_over')}</>
-              : myTurn
-              ? <><IconLightning size={13} color="#FA2D1A" /> {mode === 'duel' && !isOnlineDuel ? (game.turn() === 'w' ? t('white_turn') : t('black_turn')) : t('your_turn')}</>
-              : <><IconKnight size={13} color="var(--accent-blue)" /> {t('opponent_turn')}</>}
-          </span>
-        </div>
+      {/* Opponent panel */}
+      <PlayerPanel
+        name={oppName}
+        rating={oppRating}
+        title={mode === 'vs_ai' && skillLevel >= 15 ? 'gm' : null}
+        active={!myTurn && !finished}
+        myTurn={false}
+      />
 
-        {/* Board */}
+      {/* Board */}
+      <div style={{ display: 'flex', justifyContent: 'center', margin: '10px 0' }}>
         <Chessboard
           options={{
             id: 'chess-legends-board',
             position: game.fen(),
             boardOrientation: isOnlineDuel && myColor === 'b' ? 'black' : 'white',
-            boardStyle: { borderRadius: 14, boxShadow: '0 8px 32px rgba(26,26,26,0.18)', width: boardPx, height: boardPx },
+            boardStyle: { borderRadius: 10, boxShadow: '0 12px 32px rgba(168,85,247,0.18)', width: boardPx, height: boardPx },
             lightSquareStyle: { backgroundColor: theme.light },
             darkSquareStyle:  { backgroundColor: theme.dark },
             customPieces,
@@ -243,59 +222,151 @@ export default function ChessGame({ profile, mode = 'vs_ai', skillLevel = 10, in
             onPieceDrop,
           }}
         />
-
-        {/* Action buttons */}
-        {!finished && (
-          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-            <button onClick={() => endGame(game, 'loss')} style={{ ...btn('var(--tint-red)', '#FA2D1A', 'var(--tint-red-border)'), display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-              <IconFlag size={16} color="#FA2D1A" /> {t('resign')}
-            </button>
-            <button onClick={() => endGame(game, 'draw')} style={{ ...btn('var(--bg-card-soft)', 'var(--muted)', 'var(--border)'), display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-              <IconHandshake size={16} color="var(--muted)" /> {t('draw_offer')}
-            </button>
-          </div>
-        )}
-
-        {/* Result */}
-        {result && (
-          <div style={{
-            marginTop: 12, padding: '14px 20px', borderRadius: 14,
-            background: resultConfig.bg, border: `1.5px solid ${resultConfig.border}`,
-            color: resultConfig.color, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-            ...display, fontSize: 26,
-          }}>
-            {resultConfig.icon} {resultConfig.text}
-          </div>
-        )}
       </div>
 
-      {/* Move log */}
-      <div style={{
-        width: 180, flexShrink: 0,
-        background: 'var(--bg-card)', border: '1.5px solid var(--border)', borderRadius: 16,
-        padding: 16, display: 'flex', flexDirection: 'column',
-        height: boardPx + 46,
-      }}>
-        <p style={{ ...display, fontSize: 18, color: 'var(--text)', margin: '0 0 12px' }}>{t('moves_log')}</p>
-        <div style={{ flex: 1, overflowY: 'auto' }}>
-          {movePairs.length === 0
-            ? <p style={{ color: 'var(--muted-soft)', fontSize: 12, textAlign: 'center', marginTop: 20 }}>{t('first_move')}</p>
-            : movePairs.map(({ num, w, b }) => (
-                <div key={num} style={{ display: 'flex', gap: 6, fontSize: 12, marginBottom: 3 }}>
-                  <span style={{ color: 'var(--muted-soft)', width: 22, textAlign: 'right', flexShrink: 0 }}>{num}.</span>
-                  <span style={{ color: 'var(--text)', fontFamily: 'monospace', width: 52 }}>{w}</span>
-                  {b && <span style={{ color: 'var(--muted)', fontFamily: 'monospace' }}>{b}</span>}
-                </div>
-              ))
-          }
+      {/* My panel */}
+      <PlayerPanel
+        name={profile?.username || 'you'}
+        rating={profile?.rating || 1500}
+        active={myTurn && !finished}
+        myTurn={true}
+      />
+
+      {/* Status pill — when something to say */}
+      {(waitingFor || thinking || finished) && (
+        <div style={{
+          marginTop: 12, padding: '10px 14px', borderRadius: 10,
+          background: 'var(--bg-card)', border: '1px solid var(--border)',
+          textAlign: 'center', fontSize: 12, color: 'var(--muted)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+        }}>
+          {waitingFor === 'opponent' ? <>{t('waiting_opponent')}</>
+            : thinking ? <><IconRobot size={14} color="var(--primary)" /> {t('ai_thinking')}</>
+            : <>{resultConfig.icon} <span style={{ color: resultConfig.color, fontWeight: 700 }}>{resultConfig.text}</span></>}
         </div>
-        {finished && (
-          <button onClick={() => navigator.clipboard.writeText(game.pgn())} style={{ ...btn('var(--bg-card-soft)', 'var(--muted)', 'var(--border)', '100%', 10), display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-            <IconClipboard size={16} color="var(--muted)" /> {t('copy_pgn')}
-          </button>
+      )}
+
+      {/* Action buttons row — like reference */}
+      {!finished && (
+        <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+          <ActionBtn onClick={() => endGame(game, 'draw')} icon={<HalfIcon />} label={t('draw_offer')} />
+          <ActionBtn onClick={() => endGame(game, 'loss')} icon={<IconFlag size={14} color="currentColor" />} label={t('resign')} accent="red" />
+          <ActionBtn onClick={() => navigator.clipboard.writeText(game.pgn())} icon={<MoreIcon />} label={t('more') || '...'} />
+        </div>
+      )}
+
+      {/* Tabs: moves / chat */}
+      <div style={{ marginTop: 18, borderBottom: '1px solid var(--border)', display: 'flex', gap: 24, padding: '0 4px' }}>
+        <Tab active>{t('moves_log')}</Tab>
+        <Tab>{t('game_chat') || 'чат'}</Tab>
+      </div>
+
+      {/* Move list */}
+      <div style={{ paddingTop: 8, maxHeight: 240, overflowY: 'auto' }}>
+        {movePairs.length === 0 ? (
+          <p style={{ color: 'var(--muted-soft)', fontSize: 12, textAlign: 'center', padding: '20px 0' }}>{t('first_move')}</p>
+        ) : (
+          movePairs.map(({ num, w, b }) => (
+            <div key={num} style={{
+              display: 'grid', gridTemplateColumns: '32px 1fr 24px 1fr 60px',
+              alignItems: 'center', padding: '8px 4px',
+              borderBottom: '1px solid var(--border-soft)',
+              fontSize: 13,
+            }}>
+              <span style={{ color: 'var(--muted-soft)', fontFamily: 'monospace', fontSize: 11 }}>{num}</span>
+              <span style={{ color: 'var(--text)', fontWeight: 600, fontFamily: 'monospace' }}>{w}</span>
+              {b ? <IconArrowSmall /> : <span />}
+              <span style={{ color: 'var(--muted)', fontWeight: 500, fontFamily: 'monospace' }}>{b || ''}</span>
+              <span style={{ color: 'var(--muted-soft)', fontSize: 10, fontFamily: 'monospace', textAlign: 'right' }}>-00:0{num % 10}</span>
+            </div>
+          ))
         )}
       </div>
     </div>
+  )
+}
+
+// ── Player panel (top opp, bottom me) ─────────────────────────────────────
+function PlayerPanel({ name, rating, title, active, myTurn }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 12,
+      padding: '10px 14px', borderRadius: 14,
+      background: 'var(--bg-card)', border: `1px solid ${active ? 'var(--primary)' : 'var(--border)'}`,
+      transition: 'border-color 0.15s',
+    }}>
+      <Avatar name={name} size={36} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 6, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {title && <span style={{ fontSize: 9, fontWeight: 800, padding: '2px 5px', borderRadius: 4, background: 'var(--primary)', color: '#FFFFFF', letterSpacing: 0.5 }}>{title.toUpperCase()}</span>}
+          {name}
+        </div>
+        <div style={{ fontSize: 11, color: 'var(--muted-soft)', display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 1, fontFamily: 'monospace' }}>
+          <CrossSmall /> {rating}
+        </div>
+      </div>
+      <div style={{
+        padding: '6px 14px', borderRadius: 10,
+        background: active ? 'var(--primary)' : 'var(--bg-tag)',
+        color: active ? '#FFFFFF' : 'var(--muted)',
+        fontSize: 18, fontWeight: 800, fontFamily: 'monospace',
+        minWidth: 70, textAlign: 'center',
+      }}>
+        {active ? '29:59' : '29:57'}
+      </div>
+    </div>
+  )
+}
+
+function ActionBtn({ onClick, icon, label, accent }) {
+  return (
+    <button onClick={onClick} style={{
+      flex: 1, padding: '10px 8px', borderRadius: 10,
+      background: 'var(--bg-card)', border: '1px solid var(--border)',
+      cursor: 'pointer', color: accent === 'red' ? 'var(--accent-red)' : 'var(--text)',
+      display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+      fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: 12,
+    }}>
+      {icon} {label}
+    </button>
+  )
+}
+
+function Tab({ active, children }) {
+  return (
+    <button style={{
+      padding: '10px 0', background: 'transparent', border: 'none', cursor: 'pointer',
+      borderBottom: active ? '2px solid var(--primary)' : '2px solid transparent',
+      color: active ? 'var(--text)' : 'var(--muted)',
+      fontFamily: 'inherit', fontWeight: active ? 700 : 600, fontSize: 13,
+    }}>
+      {children}
+    </button>
+  )
+}
+
+function HalfIcon() {
+  return <span style={{ fontSize: 13, fontWeight: 800, fontFamily: 'monospace' }}>½</span>
+}
+function MoreIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" />
+    </svg>
+  )
+}
+function IconArrowSmall() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted-soft)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+    </svg>
+  )
+}
+function CrossSmall() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+      <line x1="5" y1="5" x2="19" y2="19" /><line x1="19" y1="5" x2="5" y2="19" />
+    </svg>
   )
 }
 
