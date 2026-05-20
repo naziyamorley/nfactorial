@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense } from 'react'
-import { Routes, Route, useNavigate, useParams } from 'react-router-dom'
+import { Routes, Route, useNavigate, useParams, Navigate } from 'react-router-dom'
 import { useUser } from './hooks/useUser'
 import { supabaseConfigured } from './lib/supabase'
 import { useLang } from './lib/i18n'
@@ -20,6 +20,10 @@ import TournamentPage from './components/TournamentPage'
 const MapPage      = lazy(() => import('./components/MapPage'))       // pulls in Leaflet (~200KB)
 const SchoolPage   = lazy(() => import('./components/SchoolPage'))
 const UpgradePro   = lazy(() => import('./components/UpgradePro'))
+const LessonsPage  = lazy(() => import('./components/LessonsPage'))
+const HeroesPage   = lazy(() => import('./components/HeroesPage'))
+const AboutPage    = lazy(() => import('./components/AboutPage'))
+const Landing      = lazy(() => import('./components/Landing'))
 
 const BASE_DEMO = {
   id: 'demo',
@@ -89,6 +93,20 @@ function RouteFallback() {
   )
 }
 
+// Public layout — top bar + footer for unauthenticated visitors.
+const PublicTopBar = lazy(() => import('./components/PublicTopBar'))
+const Footer       = lazy(() => import('./components/Footer'))
+
+function PublicPage({ children }) {
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
+      <Suspense fallback={null}><PublicTopBar /></Suspense>
+      <main style={{ flex: 1 }}>{children}</main>
+      <Suspense fallback={null}><Footer /></Suspense>
+    </div>
+  )
+}
+
 // ─── Root App ─────────────────────────────────────────────────────────────────
 export default function App() {
   const { user, profile, loading, applyGameResult, setProfile } = useUser()
@@ -127,8 +145,23 @@ export default function App() {
     )
   }
 
-  // Not logged in (only when Supabase is configured)
-  if (supabaseConfigured && !user) return <Auth />
+  // Not logged in (only when Supabase is configured) — public site with landing
+  if (supabaseConfigured && !user) {
+    return (
+      <Routes>
+        <Route path="/" element={<Suspense fallback={<RouteFallback />}><Landing /></Suspense>} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/lessons" element={<PublicPage><Suspense fallback={<RouteFallback />}><LessonsPage /></Suspense></PublicPage>} />
+        <Route path="/lessons/:lessonId" element={<PublicPage><Suspense fallback={<RouteFallback />}><LessonsPage /></Suspense></PublicPage>} />
+        <Route path="/heroes" element={<PublicPage><Suspense fallback={<RouteFallback />}><HeroesPage /></Suspense></PublicPage>} />
+        <Route path="/about" element={<PublicPage><Suspense fallback={<RouteFallback />}><AboutPage page="about" /></Suspense></PublicPage>} />
+        <Route path="/privacy" element={<PublicPage><Suspense fallback={<RouteFallback />}><AboutPage page="privacy" /></Suspense></PublicPage>} />
+        <Route path="/terms" element={<PublicPage><Suspense fallback={<RouteFallback />}><AboutPage page="terms" /></Suspense></PublicPage>} />
+        <Route path="/contact" element={<PublicPage><Suspense fallback={<RouteFallback />}><AboutPage page="contact" /></Suspense></PublicPage>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    )
+  }
 
   // Logged in but no class set yet
   if (supabaseConfigured && profile && !profile.class) {
@@ -228,6 +261,34 @@ export default function App() {
                   <UpgradePro profile={effectiveProfile} user={user} />
                 </Suspense>
               }
+            />
+            <Route
+              path="/lessons"
+              element={<Suspense fallback={<RouteFallback />}><LessonsPage /></Suspense>}
+            />
+            <Route
+              path="/lessons/:lessonId"
+              element={<Suspense fallback={<RouteFallback />}><LessonsPage /></Suspense>}
+            />
+            <Route
+              path="/heroes"
+              element={<Suspense fallback={<RouteFallback />}><HeroesPage /></Suspense>}
+            />
+            <Route
+              path="/about"
+              element={<Suspense fallback={<RouteFallback />}><AboutPage page="about" /></Suspense>}
+            />
+            <Route
+              path="/privacy"
+              element={<Suspense fallback={<RouteFallback />}><AboutPage page="privacy" /></Suspense>}
+            />
+            <Route
+              path="/terms"
+              element={<Suspense fallback={<RouteFallback />}><AboutPage page="terms" /></Suspense>}
+            />
+            <Route
+              path="/contact"
+              element={<Suspense fallback={<RouteFallback />}><AboutPage page="contact" /></Suspense>}
             />
             <Route
               path="*"

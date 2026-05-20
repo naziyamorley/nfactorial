@@ -31,6 +31,16 @@ export default function Navbar({ profile }) {
       ),
     },
     {
+      to: '/lessons',
+      labelKey: 'nav_lessons',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'url(#navsketch)' }}>
+          <path d="M4 4 Q4 3 5 3 L11 3 Q12 4 12 5 L12 21 Q11 20 10 20 L5 20 Q4 20 4 19 Z" />
+          <path d="M20 4 Q20 3 19 3 L13 3 Q12 4 12 5 L12 21 Q13 20 14 20 L19 20 Q20 20 20 19 Z" />
+        </svg>
+      ),
+    },
+    {
       to: '/map',
       labelKey: 'nav_map',
       icon: (
