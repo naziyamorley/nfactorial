@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+/* ── Theme tokens ───────────────────────────────────────────────────────────
+   Components reference these via inline styles: style={{ background: 'var(--bg)' }}
+   To switch theme: <html data-theme="dark">. Toggled by useTheme() in lib/i18n.js.
+   Brand accents (red FA2D1A, blue 2E4C8C, green 1A7A4A) stay the same on both themes. */
+:root {
+  --bg:           #FFF3E1;  /* page background */
+  --bg-card:      #FFFFFF;  /* card / panel background */
+  --bg-card-soft: #FDF7EE;  /* warm card variant */
+  --bg-row-alt:   #FDFAF7;  /* zebra-stripe row */
+  --bg-tag:       #F5F0EA;  /* avatar bubble / inactive chip */
+  --bg-track:     #F0E8DE;  /* progress bar track */
+  --text:         #1A1A1A;  /* primary text */
+  --muted:        #7A6E66;  /* secondary text */
+  --muted-soft:   #B8AFA6;  /* tertiary / caption text */
+  --border:       #EAE0D5;  /* card / input border */
+  --border-soft:  #F0E8DE;  /* divider lines */
+  --shadow:       rgba(0,0,0,0.08);
+  --ink-light:    #FFF3E1;  /* always cream — for text on red/blue accent backgrounds */
+  --ink-dark:     #1A1A1A;  /* always dark — for text on cream backgrounds */
+  /* Semantic accent text — auto-adjusts in dark mode for readability */
+  --accent-red:   #FA2D1A;
+  --accent-blue:  #2E4C8C;
+  --accent-green: #1A7A4A;
+  --accent-amber: #92400e;
+  --accent-purple:#7c3aed;
+  /* Tinted status backgrounds (for win/loss/draw/info pills and cards) */
+  --tint-red:     #FFF0EE;  --tint-red-border:   #FFD0CB;
+  --tint-blue:    #EEF2FF;  --tint-blue-border:  #C7D4F0;
+  --tint-green:   #EDFAF3;  --tint-green-border: #A8E6C8;
+  --tint-amber:   #FFF7E6;  --tint-amber-border: #FDDCAB;
+}
+
+html[data-theme="dark"] {
+  --bg:           #15131A;
+  --bg-card:      #211D27;
+  --bg-card-soft: #1B1822;
+  --bg-row-alt:   #1D1A23;
+  --bg-tag:       #2C2733;
+  --bg-track:     #2C2733;
+  --text:         #F2ECE2;
+  --muted:        #B5AC9F;
+  --muted-soft:   #857C70;
+  --border:       #332E3A;
+  --border-soft:  #28252F;
+  --shadow:       rgba(0,0,0,0.45);
+  --ink-light:    #FFF3E1;
+  --ink-dark:     #1A1A1A;
+  --accent-red:   #FF6B5A;
+  --accent-blue:  #7FA5E0;
+  --accent-green: #5BBF8A;
+  --accent-amber: #E5A856;
+  --accent-purple:#A78BFA;
+  --tint-red:     #3A201A;  --tint-red-border:   #5A2D26;
+  --tint-blue:    #1F2640;  --tint-blue-border:  #344266;
+  --tint-green:   #18362A;  --tint-green-border: #265840;
+  --tint-amber:   #36281A;  --tint-amber-border: #553D1F;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    text-transform: lowercase;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans', system-ui, -apple-system, sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: 0.01em;
+    transition: background 0.2s, color 0.2s;
+  }
+  #root {
+    min-height: 100vh;
+    width: 100%;
+  }
+  input, textarea, select {
+    text-transform: none;
+    font-family: 'Noto Sans', system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  /* Bold editorial display font */
+  .display {
+    font-family: 'Oswald', 'DM Sans', sans-serif;
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: -0.01em;
+  }
+
+  /* Card */
+  .card {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+  }
+  .card-warm {
+    background: var(--bg-card-soft);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+  }
+
+  /* Pill badge */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .glass {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+  }
+}
+
+/* Focus accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Spinner */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Chat typing dots */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.3; }
+  50%       { transform: translateY(-4px); opacity: 1; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Leaflet popup — restyle to match theme */
+.leaflet-popup-content-wrapper {
+  background: var(--bg-card) !important;
+  color: var(--text) !important;
+  border: 1.5px solid var(--border) !important;
+}
+.leaflet-popup-tip { background: var(--bg-card) !important; }
