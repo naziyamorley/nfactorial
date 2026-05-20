@@ -51,13 +51,34 @@ export async function getProfile(userId) {
 }
 
 export async function updateProfile(userId, updates) {
+  // Upsert — works even if profile row doesn't exist yet (e.g. new user without trigger).
   const { data, error } = await supabase
     .from('profiles')
-    .update(updates)
-    .eq('id', userId)
+    .upsert({ id: userId, ...updates }, { onConflict: 'id' })
     .select()
     .single()
   if (error) throw error
+  return data
+}
+
+// Ensure a profiles row exists for the given user. Safe to call repeatedly.
+export async function ensureProfile(user) {
+  if (!user?.id) return null
+  const existing = await getProfile(user.id)
+  if (existing) return existing
+  const meta = user.user_metadata || {}
+  const { data, error } = await supabase
+    .from('profiles')
+    .upsert({
+      id: user.id,
+      username: meta.username || (user.email ? user.email.split('@')[0] : 'player'),
+      city: meta.city || 'Алматы',
+      xp: 0, level: 1, coins: 100, rating: 1000,
+      games_played: 0, games_won: 0, is_pro: false,
+    }, { onConflict: 'id' })
+    .select()
+    .single()
+  if (error) { console.warn('ensureProfile failed:', error); return null }
   return data
 }
 

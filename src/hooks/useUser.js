@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { supabase, getProfile, updateProfile } from '../lib/supabase'
+import { supabase, getProfile, updateProfile, ensureProfile } from '../lib/supabase'
 
 export function useUser() {
   const [user, setUser]       = useState(null)
@@ -9,28 +9,30 @@ export function useUser() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
-      if (session?.user) loadProfile(session.user.id)
+      if (session?.user) loadProfile(session.user)
       else setLoading(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
-      if (session?.user) loadProfile(session.user.id)
+      if (session?.user) loadProfile(session.user)
       else { setProfile(null); setLoading(false) }
     })
 
     return () => subscription.unsubscribe()
   }, [])
 
-  async function loadProfile(userId) {
+  async function loadProfile(u) {
     setLoading(true)
-    const p = await getProfile(userId)
+    let p = await getProfile(u.id)
+    // If the auth user has no profile row yet (e.g. trigger not set up), create one.
+    if (!p) p = await ensureProfile(u)
     setProfile(p)
     setLoading(false)
   }
 
   const refreshProfile = useCallback(() => {
-    if (user) loadProfile(user.id)
+    if (user) loadProfile(user)
   }, [user])
 
   const applyGameResult = useCallback(async ({ result, coinsDelta, xpDelta, playerClass }) => {

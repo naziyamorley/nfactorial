@@ -6,6 +6,7 @@ import { useLang } from './lib/i18n'
 import { IconChessKing, IconChessRook } from './components/Icons'
 import Auth from './components/Auth'
 import ClassSelector from './components/ClassSelector'
+import OnboardingLevel from './components/OnboardingLevel'
 import TopBar from './components/TopBar'
 import Dashboard from './components/Dashboard'
 import ChessGame from './components/ChessGame'
@@ -109,7 +110,7 @@ function PublicPage({ children }) {
 
 // ─── Root App ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const { user, profile, loading, applyGameResult, setProfile } = useUser()
+  const { user, profile, loading, applyGameResult, setProfile, refreshProfile } = useUser()
   const { t } = useLang()
   const navigate = useNavigate()
 
@@ -118,8 +119,11 @@ export default function App() {
   const effectiveProfile = supabaseConfigured ? profile : DEMO_PROFILE
   const isDemo = !supabaseConfigured
 
-  function onClassSelected(cls) {
+  async function onClassSelected(cls) {
+    // Optimistic update + refresh from server to get full row (xp/level/coins defaults)
     setProfile(p => ({ ...p, class: cls }))
+    try { await refreshProfile() } catch { /* ignore — optimistic state already set */ }
+    navigate('/', { replace: true })
   }
 
   function handleStartGame({ mode, skillLevel, inviteCode }) {
@@ -166,6 +170,21 @@ export default function App() {
   // Logged in but no class set yet
   if (supabaseConfigured && profile && !profile.class) {
     return <ClassSelector userId={user.id} onComplete={onClassSelected} />
+  }
+
+  // Class set but onboarding not complete — show level picker
+  const onboardedLocal = typeof window !== 'undefined' && localStorage.getItem(`chessy_onboarded_${user?.id}`) === '1'
+  if (supabaseConfigured && profile && profile.class && !profile.onboarded && !onboardedLocal) {
+    return (
+      <OnboardingLevel
+        userId={user.id}
+        onComplete={async () => {
+          localStorage.setItem(`chessy_onboarded_${user.id}`, '1')
+          try { await refreshProfile() } catch { /* ignore */ }
+          navigate('/', { replace: true })
+        }}
+      />
+    )
   }
 
   return (

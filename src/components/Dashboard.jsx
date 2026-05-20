@@ -35,6 +35,7 @@ export default function Dashboard({ profile, onStartGame, onSpendCoins }) {
   if (showNewGame) {
     return (
       <NewGameFlow
+        profile={profile}
         onStart={(opts) => { setShowNewGame(false); onStartGame(opts) }}
         onBack={() => setShowNewGame(false)}
         selectedLevel={selectedLevel}
@@ -274,8 +275,43 @@ function HistoryIcon() {
 }
 
 // ── New Game flow (inline) ─────────────────────────────────────────────────
-function NewGameFlow({ onStart, onBack, selectedLevel, setSelectedLevel, t }) {
-  const [mode, setMode] = useState(null) // 'vs_ai' | 'duel' | null
+function NewGameFlow({ profile, onStart, onBack, selectedLevel, setSelectedLevel, t }) {
+  const [mode, setMode] = useState(null) // 'vs_ai' | 'duel_local' | 'duel_online'
+  const [creatingDuel, setCreatingDuel] = useState(false)
+  const [duelLink, setDuelLink] = useState(null)
+  const [error, setError] = useState(null)
+
+  async function handleStart() {
+    setError(null)
+    if (mode === 'vs_ai') {
+      onStart({ mode: 'vs_ai', skillLevel: selectedLevel })
+      return
+    }
+    if (mode === 'duel_local') {
+      onStart({ mode: 'duel' })
+      return
+    }
+    if (mode === 'duel_online') {
+      setCreatingDuel(true)
+      try {
+        if (!profile?.id) throw new Error('no profile — sign in first')
+        const duel = await createDuel(profile.id)
+        const link = `${window.location.origin}/duel/${duel.invite_code}`
+        setDuelLink(link)
+        try { await navigator.clipboard.writeText(link) } catch { /* ignore */ }
+      } catch (e) {
+        setError(e.message || t('newgame_duel_error'))
+      } finally {
+        setCreatingDuel(false)
+      }
+    }
+  }
+
+  function openCreatedDuel() {
+    if (!duelLink) return
+    const code = duelLink.split('/').pop()
+    onStart({ mode: 'duel', inviteCode: code })
+  }
 
   return (
     <div style={{ maxWidth: 480, margin: '0 auto', padding: '16px', width: '100%' }}>
@@ -291,32 +327,40 @@ function NewGameFlow({ onStart, onBack, selectedLevel, setSelectedLevel, t }) {
         {t('newgame_title')}
       </button>
 
-      {/* Big rook illustration */}
       <div style={{
-        display: 'flex', justifyContent: 'center', padding: '36px 0 20px',
+        display: 'flex', justifyContent: 'center', padding: '24px 0 16px',
         color: 'var(--primary)',
         filter: 'drop-shadow(0 16px 40px rgba(168,85,247,0.35))',
       }}>
-        <IconChessRook size={140} color="currentColor" />
+        <IconChessRook size={120} color="currentColor" />
       </div>
 
-      <p style={{ textAlign: 'center', fontSize: 14, color: 'var(--muted)', margin: '0 0 20px' }}>
+      <p style={{ textAlign: 'center', fontSize: 14, color: 'var(--muted)', margin: '0 0 18px' }}>
         {t('newgame_choose')}
       </p>
 
-      {/* Mode list */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
+      {/* Mode list — 3 distinct options */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
         <ModeRow
           icon={<IconRobot size={20} color="currentColor" />}
           title={t('newgame_vs_ai')}
+          subtitle={t('newgame_vs_ai_sub')}
           active={mode === 'vs_ai'}
           onClick={() => setMode('vs_ai')}
         />
         <ModeRow
           icon={<IconSwords size={20} color="currentColor" />}
-          title={t('newgame_duel')}
-          active={mode === 'duel'}
-          onClick={() => setMode('duel')}
+          title={t('newgame_duel_local')}
+          subtitle={t('newgame_duel_local_sub')}
+          active={mode === 'duel_local'}
+          onClick={() => setMode('duel_local')}
+        />
+        <ModeRow
+          icon={<IconSwords size={20} color="currentColor" />}
+          title={t('newgame_duel_online')}
+          subtitle={t('newgame_duel_online_sub')}
+          active={mode === 'duel_online'}
+          onClick={() => setMode('duel_online')}
         />
       </div>
 
@@ -327,7 +371,7 @@ function NewGameFlow({ onStart, onBack, selectedLevel, setSelectedLevel, t }) {
             {t('newgame_difficulty')}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 6 }}>
-            {AI_LEVEL_DEFS.map(({ level, key, icon }) => {
+            {AI_LEVEL_DEFS.map(({ level, icon }) => {
               const active = selectedLevel === level
               return (
                 <button key={level} onClick={() => setSelectedLevel(level)} style={{
@@ -347,27 +391,50 @@ function NewGameFlow({ onStart, onBack, selectedLevel, setSelectedLevel, t }) {
         </div>
       )}
 
-      {/* CTA */}
+      {/* Online duel — link card */}
+      {duelLink && (
+        <div style={{ marginBottom: 16, padding: '14px 16px', background: 'var(--bg-card)', border: '1px solid var(--primary)', borderRadius: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', marginBottom: 6, letterSpacing: 1, textTransform: 'uppercase' }}>
+            {t('newgame_duel_link_label')}
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--muted)', wordBreak: 'break-all', fontFamily: 'monospace', marginBottom: 10 }}>{duelLink}</div>
+          <div style={{ fontSize: 11, color: 'var(--muted-soft)', marginBottom: 10 }}>{t('newgame_duel_link_hint')}</div>
+          <button onClick={openCreatedDuel} style={{
+            width: '100%', padding: '11px', borderRadius: 10, border: 'none', cursor: 'pointer',
+            background: 'var(--primary)', color: '#FFFFFF', fontWeight: 700, fontSize: 13,
+            fontFamily: 'inherit',
+          }}>
+            {t('newgame_open_board')}
+          </button>
+        </div>
+      )}
+
+      {error && (
+        <div style={{ padding: '10px 14px', background: 'var(--tint-red)', border: '1px solid var(--tint-red-border)', borderRadius: 10, color: 'var(--accent-red)', fontSize: 12, marginBottom: 12 }}>
+          {error}
+        </div>
+      )}
+
       <button
-        disabled={!mode}
-        onClick={() => mode === 'vs_ai' ? onStart({ mode: 'vs_ai', skillLevel: selectedLevel }) : onStart({ mode: 'duel' })}
+        disabled={!mode || creatingDuel}
+        onClick={handleStart}
         style={{
           width: '100%', padding: '15px',
-          background: mode ? 'var(--primary)' : 'var(--bg-card)',
-          color: mode ? '#FFFFFF' : 'var(--muted-soft)',
-          border: mode ? 'none' : '1px solid var(--border)',
-          borderRadius: 14, cursor: mode ? 'pointer' : 'not-allowed',
+          background: mode && !creatingDuel ? 'var(--primary)' : 'var(--bg-card)',
+          color: mode && !creatingDuel ? '#FFFFFF' : 'var(--muted-soft)',
+          border: mode && !creatingDuel ? 'none' : '1px solid var(--border)',
+          borderRadius: 14, cursor: mode && !creatingDuel ? 'pointer' : 'not-allowed',
           fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 16, letterSpacing: 0.5,
           transition: 'all 0.15s',
         }}
       >
-        {t('newgame_start')}
+        {creatingDuel ? '...' : mode === 'duel_online' ? t('newgame_create_link') : t('newgame_start')}
       </button>
     </div>
   )
 }
 
-function ModeRow({ icon, title, active, onClick }) {
+function ModeRow({ icon, title, subtitle, active, onClick }) {
   return (
     <button onClick={onClick} style={{
       display: 'flex', alignItems: 'center', gap: 14,
@@ -377,8 +444,11 @@ function ModeRow({ icon, title, active, onClick }) {
       cursor: 'pointer', fontFamily: 'inherit',
       color: 'var(--text)', textAlign: 'left',
     }}>
-      <span style={{ color: 'var(--primary)' }}>{icon}</span>
-      <span style={{ flex: 1, fontSize: 15, fontWeight: 600 }}>{title}</span>
+      <span style={{ color: 'var(--primary)', flexShrink: 0 }}>{icon}</span>
+      <span style={{ flex: 1, minWidth: 0 }}>
+        <span style={{ display: 'block', fontSize: 14, fontWeight: 600 }}>{title}</span>
+        {subtitle && <span style={{ display: 'block', fontSize: 11, color: 'var(--muted-soft)', marginTop: 2 }}>{subtitle}</span>}
+      </span>
       <IconArrowRight size={18} color="var(--muted)" />
     </button>
   )
