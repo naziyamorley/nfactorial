@@ -5,7 +5,7 @@ import {
   IconChessRook, IconChessKing, IconTrophy, IconScroll, IconBook, IconRobot,
   IconStar, IconArrowRight, IconCrown, IconSkull, IconHandshake,
   IconSwords, IconShield, IconKnight, IconSprout, IconTarget, IconLightning, IconFlame, IconDiamond,
-  IconCoin,
+  IconCoin, IconUsers,
 } from './Icons'
 import Avatar from './Avatar'
 import { useLang } from '../lib/i18n'
@@ -47,32 +47,37 @@ export default function Dashboard({ profile, onStartGame, onSpendCoins }) {
 
   return (
     <div style={{ maxWidth: 720, margin: '0 auto', padding: '12px 16px 32px', width: '100%' }}>
-      {/* ── 2 big hero tiles ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
-        <HeroTile
-          title={t('home_tile_new_game')}
-          onClick={() => setShowNewGame(true)}
-          accent="var(--primary)"
-          decoration={
-            <ChessBoardArt />
-          }
-        />
-        <HeroTile
-          title={t('home_tile_tournaments')}
-          onClick={() => navigate('/tournament')}
-          accent="var(--accent-amber)"
-          decoration={
-            <TrophyArt />
-          }
-        />
+      {/* ── Primary CTA — clean, no fake art ── */}
+      <button
+        onClick={() => setShowNewGame(true)}
+        style={{
+          width: '100%', padding: '18px 22px',
+          background: 'var(--primary)', color: '#FFFFFF',
+          border: 'none', borderRadius: 14, cursor: 'pointer',
+          fontFamily: 'inherit', fontWeight: 700, fontSize: 16,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          marginBottom: 10,
+        }}
+      >
+        <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <IconChessRook size={22} color="currentColor" />
+          {t('home_tile_new_game')}
+        </span>
+        <IconArrowRight size={18} color="currentColor" />
+      </button>
+
+      {/* Secondary actions row */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
+        <ActionCard to="/tournament" icon={<IconTrophy size={22} color="currentColor" />} label={t('home_tile_tournaments')} />
+        <ActionCard to="/puzzles" icon={<IconScroll size={22} color="currentColor" />} label={t('nav_puzzles')} />
       </div>
 
       {/* ── Row of 4 quick tiles ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 14 }}>
-        <QuickTile to="/profile" label={t('quick_history')} icon={<HistoryIcon />} />
-        <QuickTile to="/lessons" label={t('quick_learn')}   icon={<IconBook size={22} color="currentColor" />} />
-        <QuickTile to="/coach"   label={t('quick_chat')}    icon={<IconRobot size={22} color="currentColor" />} />
-        <QuickTile to="/leaderboard" label={t('quick_rank')} icon={<IconCrown size={22} color="currentColor" />} badge={profile?.level} />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 16 }}>
+        <QuickTile to="/lessons" label={t('quick_learn')}   icon={<IconBook size={20} color="currentColor" />} />
+        <QuickTile to="/coach"   label={t('quick_chat')}    icon={<IconRobot size={20} color="currentColor" />} />
+        <QuickTile to="/friends" label={t('nav_friends')}   icon={<IconUsers size={20} color="currentColor" />} />
+        <QuickTile to="/leaderboard" label={t('quick_rank')} icon={<IconCrown size={20} color="currentColor" />} />
       </div>
 
       {/* ── Premium banner ── */}
@@ -123,50 +128,34 @@ export default function Dashboard({ profile, onStartGame, onSpendCoins }) {
   )
 }
 
-// ── Hero tile with big card + decoration ───────────────────────────────────
-function HeroTile({ title, onClick, decoration, accent }) {
+// ── Secondary action card (clean, no fake art) ─────────────────────────────
+function ActionCard({ to, icon, label }) {
   return (
-    <button onClick={onClick} style={{
-      position: 'relative', overflow: 'hidden',
-      aspectRatio: '1 / 1.05',
+    <Link to={to} style={{
+      padding: '16px 18px',
       background: 'var(--bg-card)', border: '1px solid var(--border)',
-      borderRadius: 16, padding: '14px 14px 16px',
-      cursor: 'pointer', textAlign: 'left',
-      display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-      color: 'var(--text)', fontFamily: 'inherit',
-      transition: 'transform 0.15s ease, border-color 0.15s ease',
-    }}
-    onMouseEnter={e => { e.currentTarget.style.borderColor = accent }}
-    onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)' }}
-    >
-      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
-        {decoration}
-      </div>
-      <div style={{ position: 'relative', ...display, fontSize: 18, fontWeight: 800 }}>{title}</div>
-    </button>
+      borderRadius: 14,
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      textDecoration: 'none', color: 'var(--text)',
+    }}>
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+        <span style={{ color: 'var(--primary)' }}>{icon}</span>
+        <span style={{ fontWeight: 600, fontSize: 14 }}>{label}</span>
+      </span>
+      <IconArrowRight size={16} color="var(--muted-soft)" />
+    </Link>
   )
 }
 
-function QuickTile({ to, label, icon, badge }) {
+function QuickTile({ to, label, icon }) {
   return (
     <Link to={to} style={{
-      aspectRatio: '1 / 1',
       background: 'var(--bg-card)', border: '1px solid var(--border)',
-      borderRadius: 16, padding: '10px 8px',
+      borderRadius: 12, padding: '12px 6px',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6,
       textDecoration: 'none', color: 'var(--text)',
-      position: 'relative',
     }}>
-      {badge !== undefined && (
-        <span style={{
-          position: 'absolute', top: 8, right: 8,
-          minWidth: 16, height: 16, padding: '0 5px', borderRadius: 8,
-          background: 'var(--primary)', color: '#FFFFFF',
-          fontSize: 9, fontWeight: 800,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>{badge}</span>
-      )}
-      <span style={{ color: 'var(--primary)' }}>{icon}</span>
+      <span style={{ color: 'var(--muted)' }}>{icon}</span>
       <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text)', textAlign: 'center', lineHeight: 1.1 }}>{label}</span>
     </Link>
   )
@@ -230,49 +219,6 @@ function GameRow({ game, isLast, t }) {
   )
 }
 
-// ── Decorative chess board image ──────────────────────────────────────────
-function ChessBoardArt() {
-  const cells = []
-  for (let r = 0; r < 4; r++) {
-    for (let c = 0; c < 4; c++) {
-      const dark = (r + c) % 2 === 1
-      cells.push(<div key={`${r}-${c}`} style={{
-        width: 26, height: 26,
-        background: dark ? 'var(--board-dark)' : 'var(--board-light)',
-      }} />)
-    }
-  }
-  return (
-    <div style={{
-      transform: 'rotate(-8deg) translateY(-6px)',
-      display: 'grid', gridTemplateColumns: 'repeat(4, 26px)',
-      borderRadius: 6, overflow: 'hidden',
-      boxShadow: '0 8px 24px rgba(168,85,247,0.3)',
-    }}>
-      {cells}
-    </div>
-  )
-}
-
-function TrophyArt() {
-  return (
-    <div style={{
-      transform: 'translateY(-4px)', color: 'var(--accent-amber)',
-      filter: 'drop-shadow(0 8px 16px rgba(245,165,36,0.35))',
-    }}>
-      <IconTrophy size={88} color="currentColor" />
-    </div>
-  )
-}
-
-function HistoryIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="9" />
-      <polyline points="12 7 12 12 15 14" />
-    </svg>
-  )
-}
 
 // ── New Game flow (inline) ─────────────────────────────────────────────────
 function NewGameFlow({ profile, onStart, onBack, selectedLevel, setSelectedLevel, t }) {

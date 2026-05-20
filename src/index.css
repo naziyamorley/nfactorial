@@ -253,8 +253,7 @@ textarea:focus-visible {
 
 /* Mobile-specific layout adjustments */
 @media (max-width: 768px) {
-  /* Reserve space for bottom-nav so content isn't hidden */
-  .has-bottom-nav { padding-bottom: 76px; }
+  .app-main { padding-bottom: 76px; }
 }
 
 /* App-shell layout helper */

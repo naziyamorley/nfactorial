@@ -191,7 +191,7 @@ export default function App() {
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', minHeight: '100dvh', background: 'var(--bg)' }}>
       <TopBar profile={effectiveProfile} />
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+      <div className="app-main" style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         {isDemo && (
           <div style={{ background: '#FA2D1A', textAlign: 'center', padding: '8px 16px', flexShrink: 0 }}>
             <p style={{ color: 'var(--ink-light)', fontSize: 12, margin: 0, fontWeight: 600 }}>

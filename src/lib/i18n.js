@@ -1326,7 +1326,7 @@ export function useTheme() {
 }
 
 function getThemeFromStorage() {
-  return localStorage.getItem('chessy_theme') || 'dark'
+  return localStorage.getItem('chessy_theme') || 'light'
 }
 
 export function ThemeProvider({ children }) {
