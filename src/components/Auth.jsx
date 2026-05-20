@@ -66,13 +66,13 @@ export default function Auth() {
   ]
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexWrap: 'wrap' }}>
       {/* Left hero panel */}
-      <div style={{
-        flex: 1, background: '#2E4C8C', display: 'flex', flexDirection: 'column',
-        justifyContent: 'space-between', padding: '52px 56px',
+      <div className="auth-hero" style={{
+        flex: '1 1 360px', background: 'var(--primary)', display: 'flex', flexDirection: 'column',
+        justifyContent: 'space-between', padding: 'clamp(28px, 6vw, 52px)',
         position: 'relative', overflow: 'hidden',
-        minHeight: '100vh',
+        minHeight: '36vh', color: '#FFFFFF',
       }}>
         {/* Decorative chess symbol */}
         <div style={{
@@ -96,23 +96,23 @@ export default function Auth() {
             chess legends · kz
           </div>
 
-          <div style={{ ...display, fontSize: 96, color: 'var(--ink-light)', lineHeight: 0.85, marginBottom: 20, letterSpacing: '-0.03em' }}>
+          <div style={{ ...display, fontSize: 'clamp(48px, 9vw, 88px)', color: '#FFFFFF', lineHeight: 0.88, marginBottom: 18, letterSpacing: '-0.025em', fontWeight: 800 }}>
             играй<br />легенды.
           </div>
 
-          <p style={{ margin: 0, fontSize: 17, color: 'rgba(255,243,225,0.72)', maxWidth: 380, lineHeight: 1.5 }}>
+          <p style={{ margin: 0, fontSize: 'clamp(14px, 2vw, 17px)', color: 'rgba(255,255,255,0.78)', maxWidth: 380, lineHeight: 1.5 }}>
             {t('auth_tagline')}
           </p>
         </div>
 
         {/* Bottom — feature bullets */}
-        <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px 28px', maxWidth: 460 }}>
+        <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px 24px', maxWidth: 480, marginTop: 24 }}>
           {FEATURES.map(({ Icon, key }) => (
-            <div key={key} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, color: 'rgba(255,243,225,0.85)' }}>
-              <span style={{ flexShrink: 0, marginTop: 1, color: 'var(--ink-light)' }}>
-                <Icon size={20} color="currentColor" />
+            <div key={key} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, color: 'rgba(255,255,255,0.88)' }}>
+              <span style={{ flexShrink: 0, marginTop: 1, color: '#FFFFFF' }}>
+                <Icon size={18} color="currentColor" />
               </span>
-              <span style={{ fontSize: 13, lineHeight: 1.35 }}>{t(key)}</span>
+              <span style={{ fontSize: 13, lineHeight: 1.4 }}>{t(key)}</span>
             </div>
           ))}
         </div>
@@ -120,10 +120,10 @@ export default function Auth() {
 
       {/* Right form panel */}
       <div style={{
-        width: 440, flexShrink: 0, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', padding: '48px 40px',
+        flex: '1 1 360px', maxWidth: 540, display: 'flex', alignItems: 'center',
+        justifyContent: 'center', padding: 'clamp(28px, 5vw, 48px) clamp(20px, 5vw, 40px)',
       }}>
-        <div style={{ width: '100%' }}>
+        <div style={{ width: '100%', maxWidth: 380 }}>
           <h2 style={{ ...display, fontSize: 40, color: 'var(--text)', marginBottom: 28, lineHeight: 1 }}>
             {mode === 'login' ? t('enter_arena') : t('create_hero')}
           </h2>
@@ -174,12 +174,9 @@ export default function Auth() {
               <p style={{ margin: 0, fontSize: 12, color: '#FA2D1A', background: 'var(--tint-red)', border: '1.5px solid var(--tint-red-border)', borderRadius: 10, padding: '10px 14px' }}>{error}</p>
             )}
 
-            <button type="submit" disabled={loading} style={{
-              padding: '14px', background: '#FA2D1A', color: 'var(--ink-light)', border: 'none',
-              borderRadius: 14, fontWeight: 900, fontSize: 18, cursor: 'pointer',
+            <button type="submit" disabled={loading} className="btn-cta btn-primary" style={{
+              width: '100%', padding: '14px', fontSize: 16, marginTop: 4,
               opacity: loading ? 0.6 : 1,
-              fontFamily: "'Oswald', sans-serif", letterSpacing: 1,
-              marginTop: 4,
             }}>
               {loading ? '...' : mode === 'login' ? t('btn_login') : t('btn_create')}
             </button>

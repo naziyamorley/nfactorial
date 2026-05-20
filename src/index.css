@@ -1,123 +1,152 @@
 @import "tailwindcss";
 
 /* ── Theme tokens ───────────────────────────────────────────────────────────
-   Components reference these via inline styles: style={{ background: 'var(--bg)' }}
-   To switch theme: <html data-theme="dark">. Toggled by useTheme() in lib/i18n.js.
-   Brand accents (red FA2D1A, blue 2E4C8C, green 1A7A4A) stay the same on both themes. */
+   Modern dark/purple premium aesthetic. One bold primary accent (purple),
+   muted neutrals for surfaces, clear hierarchy. */
+
 :root {
-  --bg:           #FFF3E1;  /* page background */
-  --bg-card:      #FFFFFF;  /* card / panel background */
-  --bg-card-soft: #FDF7EE;  /* warm card variant */
-  --bg-row-alt:   #FDFAF7;  /* zebra-stripe row */
-  --bg-tag:       #F5F0EA;  /* avatar bubble / inactive chip */
-  --bg-track:     #F0E8DE;  /* progress bar track */
-  --text:         #1A1A1A;  /* primary text */
-  --muted:        #7A6E66;  /* secondary text */
-  --muted-soft:   #B8AFA6;  /* tertiary / caption text */
-  --border:       #EAE0D5;  /* card / input border */
-  --border-soft:  #F0E8DE;  /* divider lines */
-  --shadow:       rgba(0,0,0,0.08);
-  --ink-light:    #FFF3E1;  /* always cream — for text on red/blue accent backgrounds */
-  --ink-dark:     #1A1A1A;  /* always dark — for text on cream backgrounds */
-  /* Semantic accent text — auto-adjusts in dark mode for readability */
-  --accent-red:   #FA2D1A;
-  --accent-blue:  #2E4C8C;
-  --accent-green: #1A7A4A;
-  --accent-amber: #92400e;
-  --accent-purple:#7c3aed;
-  /* Tinted status backgrounds (for win/loss/draw/info pills and cards) */
-  --tint-red:     #FFF0EE;  --tint-red-border:   #FFD0CB;
-  --tint-blue:    #EEF2FF;  --tint-blue-border:  #C7D4F0;
-  --tint-green:   #EDFAF3;  --tint-green-border: #A8E6C8;
-  --tint-amber:   #FFF7E6;  --tint-amber-border: #FDDCAB;
+  /* Light mode — minimal, clean white with purple accent */
+  --bg:           #FAFAF8;
+  --bg-card:      #FFFFFF;
+  --bg-card-soft: #F4F3F0;
+  --bg-row-alt:   #F7F6F3;
+  --bg-tag:       #EFEDE8;
+  --bg-track:     #E5E3DD;
+  --text:         #15131A;
+  --muted:        #6E6973;
+  --muted-soft:   #ABA5AE;
+  --border:       #E5E2DE;
+  --border-soft:  #EDEAE5;
+  --shadow:       rgba(20,10,30,0.08);
+  --ink-light:    #FFFFFF;
+  --ink-dark:     #15131A;
+  /* Primary purple — single bold accent */
+  --primary:      #7C3AED;
+  --primary-soft: #A78BFA;
+  --primary-tint: #F3EEFE;
+  /* Semantic — used sparingly */
+  --accent-red:   #DC2626;
+  --accent-blue:  #2563EB;
+  --accent-green: #16A34A;
+  --accent-amber: #D97706;
+  --accent-purple:#7C3AED;
+  /* Tinted backgrounds */
+  --tint-red:     #FEE2E2;  --tint-red-border:   #FCA5A5;
+  --tint-blue:    #DBEAFE;  --tint-blue-border:  #93C5FD;
+  --tint-green:   #DCFCE7;  --tint-green-border: #86EFAC;
+  --tint-amber:   #FEF3C7;  --tint-amber-border: #FCD34D;
+  --tint-purple:  #F3EEFE;  --tint-purple-border:#C4B5FD;
 }
 
 html[data-theme="dark"] {
-  --bg:           #15131A;
-  --bg-card:      #211D27;
-  --bg-card-soft: #1B1822;
-  --bg-row-alt:   #1D1A23;
-  --bg-tag:       #2C2733;
-  --bg-track:     #2C2733;
-  --text:         #F2ECE2;
-  --muted:        #B5AC9F;
-  --muted-soft:   #857C70;
-  --border:       #332E3A;
-  --border-soft:  #28252F;
-  --shadow:       rgba(0,0,0,0.45);
-  --ink-light:    #FFF3E1;
-  --ink-dark:     #1A1A1A;
-  --accent-red:   #FF6B5A;
-  --accent-blue:  #7FA5E0;
-  --accent-green: #5BBF8A;
-  --accent-amber: #E5A856;
-  --accent-purple:#A78BFA;
-  --tint-red:     #3A201A;  --tint-red-border:   #5A2D26;
-  --tint-blue:    #1F2640;  --tint-blue-border:  #344266;
-  --tint-green:   #18362A;  --tint-green-border: #265840;
-  --tint-amber:   #36281A;  --tint-amber-border: #553D1F;
+  /* Dark mode — deep near-black with purple tint, premium feel */
+  --bg:           #0B0613;
+  --bg-card:      #15101F;
+  --bg-card-soft: #100B19;
+  --bg-row-alt:   #130E1B;
+  --bg-tag:       #1F1828;
+  --bg-track:     #1F1828;
+  --text:         #F5F3F7;
+  --muted:        #A099AA;
+  --muted-soft:   #6B6470;
+  --border:       #251D32;
+  --border-soft:  #1B1525;
+  --shadow:       rgba(0,0,0,0.5);
+  --ink-light:    #FFFFFF;
+  --ink-dark:     #0B0613;
+  --primary:      #A855F7;
+  --primary-soft: #C084FC;
+  --primary-tint: #2A1A40;
+  --accent-red:   #F87171;
+  --accent-blue:  #60A5FA;
+  --accent-green: #4ADE80;
+  --accent-amber: #FBBF24;
+  --accent-purple:#A855F7;
+  --tint-red:     #2A1010;  --tint-red-border:   #4B1A1A;
+  --tint-blue:    #0F1A33;  --tint-blue-border:  #1F3050;
+  --tint-green:   #0F2818;  --tint-green-border: #1B4530;
+  --tint-amber:   #2A1F0A;  --tint-amber-border: #4A3818;
+  --tint-purple:  #2A1A40;  --tint-purple-border:#4A2F70;
 }
 
 @layer base {
   * {
     box-sizing: border-box;
     text-transform: lowercase;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
   }
   body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: 'Noto Sans', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
-    letter-spacing: 0.01em;
+    letter-spacing: 0;
     transition: background 0.2s, color 0.2s;
+    overscroll-behavior: none;
   }
   #root {
     min-height: 100vh;
+    min-height: 100dvh;
     width: 100%;
   }
   input, textarea, select {
     text-transform: none;
-    font-family: 'Noto Sans', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  button {
+    font-family: inherit;
   }
 }
 
 @layer utilities {
-  /* Bold editorial display font */
+  /* Display font — bold compressed for big headlines */
   .display {
-    font-family: 'Oswald', 'DM Sans', sans-serif;
-    font-weight: 900;
-    line-height: 0.92;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    line-height: 0.95;
     letter-spacing: -0.01em;
   }
+  .display-xl {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+  }
 
-  /* Card */
+  /* Card with subtle border + bg */
   .card {
     background: var(--bg-card);
-    border: 1.5px solid var(--border);
-    border-radius: 18px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
   }
   .card-warm {
     background: var(--bg-card-soft);
-    border: 1.5px solid var(--border);
-    border-radius: 18px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
   }
 
-  /* Pill badge */
   .pill {
     display: inline-flex;
     align-items: center;
-    padding: 4px 12px;
+    padding: 4px 10px;
     border-radius: 999px;
     font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-weight: 600;
+    letter-spacing: 0.04em;
   }
 
-  .glass {
-    background: var(--bg-card);
-    border: 1.5px solid var(--border);
+  /* Mobile helpers */
+  .mobile-only { display: none; }
+  .desktop-only { display: block; }
+  @media (max-width: 768px) {
+    .mobile-only { display: block; }
+    .desktop-only { display: none; }
+    .mobile-hidden { display: none !important; }
   }
 }
 
@@ -127,61 +156,67 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid var(--accent-blue);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
   border-radius: 6px;
 }
 
-/* Hoverable cards — subtle lift on hover */
+/* Hoverable cards */
 .card-hover {
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 .card-hover:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 28px var(--shadow);
+  border-color: var(--primary-soft);
 }
 
-/* Button base — used for big CTA buttons (extend with inline color overrides) */
+/* Big CTA button */
 .btn-cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 13px 22px;
+  padding: 14px 22px;
   border-radius: 12px;
   border: none;
   cursor: pointer;
-  font-family: 'Oswald', sans-serif;
-  font-weight: 800;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
   font-size: 15px;
-  letter-spacing: 0.5px;
+  letter-spacing: -0.01em;
   transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
 }
-.btn-cta:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 18px var(--shadow); }
+.btn-cta:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 20px var(--shadow); }
 .btn-cta:active:not(:disabled) { transform: translateY(0); }
-.btn-cta:disabled { cursor: not-allowed; opacity: 0.55; }
+.btn-cta:disabled { cursor: not-allowed; opacity: 0.5; }
+.btn-primary {
+  background: var(--primary);
+  color: #FFFFFF;
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-soft);
+}
 
-/* Subtle inline link */
+/* Inline link */
 .linklike {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--accent-blue);
+  color: var(--primary);
   text-decoration: underline;
   text-underline-offset: 3px;
   font: inherit;
   padding: 0;
 }
-.linklike:hover { color: var(--text); }
+.linklike:hover { opacity: 0.8; }
 
 /* Fade-in on route mount */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.fade-in {
-  animation: fadeIn 0.24s ease-out;
-}
+.fade-in { animation: fadeIn 0.24s ease-out; }
 
 /* Spinner */
 @keyframes spin {
@@ -196,14 +231,45 @@ textarea:focus-visible {
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted-soft); }
 
-/* Leaflet popup — restyle to match theme */
+/* Leaflet popup */
 .leaflet-popup-content-wrapper {
   background: var(--bg-card) !important;
   color: var(--text) !important;
-  border: 1.5px solid var(--border) !important;
+  border: 1px solid var(--border) !important;
 }
 .leaflet-popup-tip { background: var(--bg-card) !important; }
+
+/* Mobile-specific layout adjustments */
+@media (max-width: 768px) {
+  /* Reserve space for bottom-nav so content isn't hidden */
+  .has-bottom-nav { padding-bottom: 76px; }
+}
+
+/* App-shell layout helper */
+.app-shell {
+  display: flex;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg);
+}
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+@media (max-width: 768px) {
+  .app-shell {
+    flex-direction: column-reverse;
+  }
+  .app-content {
+    padding-bottom: 70px;
+  }
+}

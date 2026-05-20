@@ -1,9 +1,7 @@
-// Hand-drawn pencil-sketch SVG icons.
-// Uses feTurbulence + feDisplacementMap to wobble lines slightly,
-// producing an organic "drawn from the hand" feel.
+// Clean line-art SVG icons — sharp lines for modern app feel.
 
-function SketchIcon({ size, color, viewBox, strokeWidth = 2, children, seed = 2, wobble = 0.6 }) {
-  const id = `sk-${seed}`
+// Clean line icons — no wobble. Sharp lines for modern app feel.
+function SketchIcon({ size, color, viewBox, strokeWidth = 1.8, children }) {
   return (
     <svg
       width={size}
@@ -15,13 +13,7 @@ function SketchIcon({ size, color, viewBox, strokeWidth = 2, children, seed = 2,
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <defs>
-        <filter id={id} x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB">
-          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed={seed} result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale={wobble} xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </defs>
-      <g filter={`url(#${id})`}>{children}</g>
+      {children}
     </svg>
   )
 }
@@ -183,21 +175,12 @@ export function IconMasks({ size = 28, color = 'currentColor' }) {
 
 export function IconMedal({ size = 28, rank = 1 }) {
   const fill = rank === 1 ? '#F5C218' : rank === 2 ? '#B8B8B8' : '#CD7F32'
-  const id = `sk-medal-${rank}`
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke={fill} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <defs>
-        <filter id={id} x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB">
-          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed={14 + rank} result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.6" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </defs>
-      <g filter={`url(#${id})`}>
-        <circle cx="16" cy="20" r="10" fill={`${fill}22`} />
-        <circle cx="16" cy="20" r="10" />
-        <path d="M11 10 L9 4 L13 7 L16 2 L19 7 L23 4 L21 10" fill={`${fill}44`} />
-      </g>
-      <text x="16" y="25" textAnchor="middle" fontSize="11" fontWeight="800" fill={fill} stroke="none" fontFamily="Oswald, sans-serif">
+    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke={fill} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="16" cy="20" r="10" fill={`${fill}22`} />
+      <circle cx="16" cy="20" r="10" />
+      <path d="M11 10 L9 4 L13 7 L16 2 L19 7 L23 4 L21 10" fill={`${fill}44`} />
+      <text x="16" y="25" textAnchor="middle" fontSize="11" fontWeight="800" fill={fill} stroke="none" fontFamily="Inter, sans-serif">
         {rank}
       </text>
     </svg>
@@ -524,41 +507,18 @@ export function IconScroll({ size = 20, color = 'currentColor' }) {
 export function HandKingIllustration({ width = 220, color = 'currentColor' }) {
   return (
     <svg width={width} viewBox="0 0 220 280" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
-      <defs>
-        <filter id="kingsk" x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB">
-          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="50" result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </defs>
-      <g filter="url(#kingsk)">
-        {/* Cross on top */}
+      <g>
         <line x1="110" y1="14" x2="110" y2="46" strokeWidth="3" />
         <line x1="96" y1="30" x2="124" y2="30" strokeWidth="3" />
-        {/* Crown rim */}
         <path d="M62 84 Q44 84 44 70 Q44 56 56 56 Q62 56 64 62 Q72 50 80 60 Q88 38 110 38 Q132 38 140 60 Q148 50 156 62 Q158 56 164 56 Q176 56 176 70 Q176 84 158 84 L158 96 L62 96 Z" />
         <line x1="62" y1="96" x2="158" y2="96" strokeWidth="2.6" />
-        {/* Stitches on crown */}
-        <path d="M80 76 Q86 72 92 76" strokeWidth="1.2" />
-        <path d="M104 70 Q110 66 116 70" strokeWidth="1.2" />
-        <path d="M128 76 Q134 72 140 76" strokeWidth="1.2" />
-        {/* Body upper */}
         <path d="M70 100 Q60 130 65 170 L155 170 Q160 130 150 100" />
-        {/* Sash */}
         <path d="M58 132 Q110 142 162 132" strokeWidth="2.4" />
-        <path d="M58 142 Q110 152 162 142" strokeWidth="1.2" />
-        {/* Lower body */}
         <path d="M68 170 Q62 200 70 220 L150 220 Q158 200 152 170" />
         <line x1="58" y1="222" x2="162" y2="222" strokeWidth="3" />
-        {/* Base */}
         <path d="M52 224 Q50 240 60 248 L160 248 Q170 240 168 224" />
         <line x1="46" y1="252" x2="174" y2="252" strokeWidth="3.4" />
         <line x1="40" y1="264" x2="180" y2="264" strokeWidth="3.4" />
-        {/* Hatching shadow */}
-        <line x1="78" y1="118" x2="86" y2="128" strokeWidth="1" opacity="0.55" />
-        <line x1="82" y1="116" x2="92" y2="130" strokeWidth="1" opacity="0.55" />
-        <line x1="88" y1="115" x2="98" y2="132" strokeWidth="1" opacity="0.55" />
-        <line x1="74" y1="186" x2="84" y2="200" strokeWidth="1" opacity="0.5" />
-        <line x1="78" y1="184" x2="90" y2="200" strokeWidth="1" opacity="0.5" />
       </g>
     </svg>
   )

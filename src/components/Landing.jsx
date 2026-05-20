@@ -43,8 +43,18 @@ export default function Landing() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section style={{ maxWidth: 1200, margin: '0 auto', padding: '64px 28px 80px', display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 48, alignItems: 'center' }}>
+      <style>{`
+        .landing-hero {
+          display: grid; grid-template-columns: 1fr;
+          gap: clamp(28px, 4vw, 48px); align-items: center;
+          max-width: 1200px; margin: 0 auto;
+          padding: clamp(40px, 6vw, 64px) clamp(20px, 4vw, 28px) clamp(56px, 8vw, 80px);
+        }
+        @media (min-width: 880px) {
+          .landing-hero { grid-template-columns: 1.1fr 1fr; }
+        }
+      `}</style>
+      <section className="landing-hero">
         <div>
           <span style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
@@ -232,24 +242,27 @@ function DemoBoard() {
     setStatus('idle')
   }
 
+  const [size, setSize] = useState(() => Math.min(360, window.innerWidth - 64))
   return (
-    <div style={{ width: '100%', maxWidth: 420 }}>
+    <div style={{ width: '100%', maxWidth: 420, margin: '0 auto' }}>
       <div style={{
-        background: 'var(--bg-card)', border: '1.5px solid var(--border)', borderRadius: 18,
-        padding: 16, boxShadow: '0 12px 32px var(--shadow)',
+        background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 18,
+        padding: 14, boxShadow: '0 12px 32px var(--shadow)',
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: 'var(--accent-red)', padding: '3px 8px', background: 'var(--tint-red)', borderRadius: 6 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: 'var(--primary)', padding: '3px 8px', background: 'var(--tint-purple)', borderRadius: 6 }}>
             {t('landing_demo_label')}
           </span>
           <span style={{ fontSize: 11, color: 'var(--muted)' }}>{t('landing_demo_hint')}</span>
         </div>
-        <Chessboard options={{
-          position: game.fen(),
-          boardOrientation: 'white',
-          boardStyle: { borderRadius: 10, width: 360, height: 360 },
-          onPieceDrop,
-        }} />
+        <div ref={el => { if (el && el.clientWidth && Math.abs(el.clientWidth - size) > 4) setSize(el.clientWidth) }}>
+          <Chessboard options={{
+            position: game.fen(),
+            boardOrientation: 'white',
+            boardStyle: { borderRadius: 10, width: size, height: size },
+            onPieceDrop,
+          }} />
+        </div>
         <div style={{ marginTop: 12, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {status === 'done' ? (
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--accent-green)', fontWeight: 700, fontSize: 13 }}>

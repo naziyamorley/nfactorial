@@ -169,10 +169,10 @@ export default function App() {
   }
 
   return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: 'var(--bg)' }}>
+    <div className="app-shell">
       <Navbar profile={effectiveProfile} />
 
-      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+      <div className="app-content">
         {isDemo && (
           <div style={{ background: '#FA2D1A', textAlign: 'center', padding: '8px 16px', flexShrink: 0 }}>
             <p style={{ color: 'var(--ink-light)', fontSize: 12, margin: 0, fontWeight: 600 }}>
